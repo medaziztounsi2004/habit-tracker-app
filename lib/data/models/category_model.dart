@@ -106,18 +106,16 @@ class CategoryModel {
   ];
 
   static CategoryModel? getById(String id) {
-    try {
-      return allCategories.firstWhere((c) => c.id == id);
-    } catch (e) {
-      return null;
-    }
+    return allCategories.cast<CategoryModel?>().firstWhere(
+      (c) => c?.id == id,
+      orElse: () => null,
+    );
   }
 
   static CategoryModel? getByType(HabitCategoryType type) {
-    try {
-      return allCategories.firstWhere((c) => c.type == type);
-    } catch (e) {
-      return null;
-    }
+    return allCategories.cast<CategoryModel?>().firstWhere(
+      (c) => c?.type == type,
+      orElse: () => null,
+    );
   }
 }

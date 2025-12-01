@@ -159,10 +159,9 @@ class ChallengeModel {
   ];
 
   static ChallengeModel? getById(String id) {
-    try {
-      return predefinedChallenges.firstWhere((c) => c.id == id);
-    } catch (e) {
-      return null;
-    }
+    return predefinedChallenges.cast<ChallengeModel?>().firstWhere(
+      (c) => c?.id == id,
+      orElse: () => null,
+    );
   }
 }
