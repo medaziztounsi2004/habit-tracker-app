@@ -69,6 +69,11 @@ class AppConstants {
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
 
+  // Quit habit milestones (in days)
+  static const List<int> quitHabitMilestones = [
+    1, 3, 7, 14, 30, 60, 90, 180, 365
+  ];
+
   // Habit categories
   static const List<String> habitCategories = [
     'Health',

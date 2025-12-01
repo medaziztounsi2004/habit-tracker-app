@@ -22,6 +22,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _moneySavedController = TextEditingController();
 
   int _selectedIconIndex = 0;
   int _selectedColorIndex = 0;
@@ -31,6 +32,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   TimeOfDay? _reminderTime;
   bool _isLoading = false;
   late FocusNode _nameFocusNode;
+  bool _isQuitHabit = false;
 
   bool get isEditing => widget.habitToEdit != null;
 
@@ -46,6 +48,10 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       _selectedCategory = widget.habitToEdit!.category;
       _selectedDays = List.from(widget.habitToEdit!.scheduledDays);
       _targetDaysPerWeek = widget.habitToEdit!.targetDaysPerWeek;
+      _isQuitHabit = widget.habitToEdit!.isQuitHabit;
+      if (widget.habitToEdit!.moneySavedPerDay != null) {
+        _moneySavedController.text = widget.habitToEdit!.moneySavedPerDay.toString();
+      }
       if (widget.habitToEdit!.reminderTime != null) {
         final parts = widget.habitToEdit!.reminderTime!.split(':');
         _reminderTime = TimeOfDay(
@@ -60,6 +66,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _moneySavedController.dispose();
     _nameFocusNode.dispose();
     super.dispose();
   }
@@ -74,6 +81,10 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
         ? '${_reminderTime!.hour.toString().padLeft(2, '0')}:${_reminderTime!.minute.toString().padLeft(2, '0')}'
         : null;
 
+    final moneySaved = _moneySavedController.text.trim().isEmpty
+        ? null
+        : double.tryParse(_moneySavedController.text.trim());
+
     if (isEditing) {
       final updatedHabit = widget.habitToEdit!.copyWith(
         name: _nameController.text.trim(),
@@ -86,6 +97,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
         scheduledDays: _selectedDays,
         targetDaysPerWeek: _targetDaysPerWeek,
         reminderTime: reminderTimeStr,
+        isQuitHabit: _isQuitHabit,
+        moneySavedPerDay: moneySaved,
       );
       await habitProvider.updateHabit(updatedHabit);
     } else {
@@ -100,6 +113,9 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
         scheduledDays: _selectedDays,
         targetDaysPerWeek: _targetDaysPerWeek,
         reminderTime: reminderTimeStr,
+        isQuitHabit: _isQuitHabit,
+        quitStartDate: _isQuitHabit ? DateTime.now() : null,
+        moneySavedPerDay: moneySaved,
       );
     }
 
@@ -124,16 +140,23 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Build vs Quit toggle
+              FadeInUp(
+                duration: const Duration(milliseconds: 400),
+                child: _buildHabitTypeToggle(),
+              ),
+              const SizedBox(height: 20),
               // Name input with autocomplete
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
+                delay: const Duration(milliseconds: 100),
                 child: _buildHabitNameField(),
               ),
               const SizedBox(height: 20),
               // Description input
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 100),
+                delay: const Duration(milliseconds: 200),
                 child: _buildTextField(
                   controller: _descriptionController,
                   label: 'Description (optional)',
@@ -141,53 +164,74 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                   maxLines: 2,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
+              // Money saved field (only for quit habits)
+              if (_isQuitHabit)
+                FadeInUp(
+                  duration: const Duration(milliseconds: 400),
+                  delay: const Duration(milliseconds: 250),
+                  child: _buildTextField(
+                    controller: _moneySavedController,
+                    label: 'Money Saved Per Day (optional)',
+                    hint: 'e.g., 10.00',
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        final parsed = double.tryParse(value);
+                        if (parsed == null || parsed < 0) {
+                          return 'Please enter a valid positive number';
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              if (_isQuitHabit) const SizedBox(height: 20),
               // Icon picker
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 200),
+                delay: Duration(milliseconds: _isQuitHabit ? 300 : 250),
                 child: _buildIconPicker(),
               ),
               const SizedBox(height: 24),
               // Color picker
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 300),
+                delay: Duration(milliseconds: _isQuitHabit ? 350 : 300),
                 child: _buildColorPicker(),
               ),
               const SizedBox(height: 24),
               // Category picker
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 400),
+                delay: Duration(milliseconds: _isQuitHabit ? 400 : 350),
                 child: _buildCategoryPicker(),
               ),
               const SizedBox(height: 24),
               // Day selector
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 500),
+                delay: Duration(milliseconds: _isQuitHabit ? 450 : 400),
                 child: _buildDaySelector(),
               ),
               const SizedBox(height: 24),
               // Target days slider
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 600),
+                delay: Duration(milliseconds: _isQuitHabit ? 500 : 450),
                 child: _buildTargetSlider(),
               ),
               const SizedBox(height: 24),
               // Reminder time
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 700),
+                delay: Duration(milliseconds: _isQuitHabit ? 550 : 500),
                 child: _buildReminderPicker(),
               ),
               const SizedBox(height: 32),
               // Save button
               FadeInUp(
                 duration: const Duration(milliseconds: 400),
-                delay: const Duration(milliseconds: 800),
+                delay: Duration(milliseconds: _isQuitHabit ? 600 : 550),
                 child: GradientButton(
                   text: isEditing ? 'Save Changes' : 'Create Habit',
                   onPressed: _saveHabit,
@@ -703,5 +747,112 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     if (time != null) {
       setState(() => _reminderTime = time);
     }
+  }
+
+  Widget _buildHabitTypeToggle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Habit Type',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _isQuitHabit = false),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    gradient: !_isQuitHabit ? AppColors.greenCyanGradient : null,
+                    color: _isQuitHabit
+                        ? Theme.of(context).colorScheme.onSurface.withAlpha(13)
+                        : null,
+                    borderRadius: BorderRadius.circular(12),
+                    border: !_isQuitHabit
+                        ? null
+                        : Border.all(
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(25),
+                          ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.trending_up,
+                        color: !_isQuitHabit
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Build Habit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: !_isQuitHabit ? FontWeight.bold : FontWeight.normal,
+                          color: !_isQuitHabit
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _isQuitHabit = true),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    gradient: _isQuitHabit ? AppColors.errorGradient : null,
+                    color: !_isQuitHabit
+                        ? Theme.of(context).colorScheme.onSurface.withAlpha(13)
+                        : null,
+                    borderRadius: BorderRadius.circular(12),
+                    border: _isQuitHabit
+                        ? null
+                        : Border.all(
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(25),
+                          ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.block,
+                        color: _isQuitHabit
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Quit Habit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: _isQuitHabit ? FontWeight.bold : FontWeight.normal,
+                          color: _isQuitHabit
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
