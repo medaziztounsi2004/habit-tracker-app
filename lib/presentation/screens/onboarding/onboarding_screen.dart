@@ -182,8 +182,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           FadeInUp(
             duration: const Duration(milliseconds: 600),
             delay: const Duration(milliseconds: 200),
-            child: const ShaderMask(
-              shaderCallback: AppColors.primaryGradient.createShader,
+            child: ShaderMask(
+              shaderCallback: (bounds) => AppColors.primaryGradient.createShader(bounds),
               child: Text(
                 'Welcome to Habit Tracker',
                 textAlign: TextAlign.center,

@@ -125,6 +125,7 @@ class AchievementsScreen extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 
