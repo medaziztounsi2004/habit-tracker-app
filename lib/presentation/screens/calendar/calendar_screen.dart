@@ -165,9 +165,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             
             // Get completion rate for this day
             final habits = provider.getHabitsForDate(date);
-            final completedCount = habits.where((h) => 
-              h.completionDates.any((d) => Helpers.isSameDay(d, date))
-            ).length;
+            final dateKey = Helpers.formatDateForStorage(date);
+            final completedCount = habits.where((h) => h.completedDates.contains(dateKey)).length;
             final completionRate = habits.isEmpty ? 0.0 : completedCount / habits.length;
 
             return GestureDetector(
@@ -245,7 +244,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             )
           else
             ...habits.map((habit) {
-              final isCompleted = habit.completionDates.any((d) => Helpers.isSameDay(d, date));
+              final dateKey = Helpers.formatDateForStorage(date);
+              final isCompleted = habit.completedDates.contains(dateKey);
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: GlassContainer(
