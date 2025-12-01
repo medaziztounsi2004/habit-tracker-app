@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:confetti/confetti.dart';
@@ -9,6 +10,8 @@ import '../../../providers/habit_provider.dart';
 import '../../../data/models/habit_model.dart';
 import '../../widgets/common/glass_container.dart';
 import '../../widgets/common/animated_progress_ring.dart';
+import '../../widgets/common/profile_header.dart';
+import '../../widgets/common/level_progress.dart';
 import '../../widgets/habit/habit_list.dart';
 import '../../widgets/animations/scale_animation.dart';
 import '../add_habit/add_habit_screen.dart';
@@ -74,8 +77,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    // Header
-                    _buildHeader(context, user?.name ?? 'User', user?.avatarEmoji ?? '😊'),
+                    // Profile Header
+                    FadeInDown(
+                      duration: const Duration(milliseconds: 500),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ProfileHeader(
+                          user: user,
+                          totalHabits: habitProvider.totalHabits,
+                          unlockedAchievements: user?.unlockedAchievements.length ?? 0,
+                          currentStreak: habitProvider.currentMaxStreak,
+                          onTap: () => _showProfileDetails(context, habitProvider),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     // Date strip
                     _buildDateStrip(context),
@@ -293,93 +308,61 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // Progress ring
             Expanded(
-              child: GlassContainer(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    AnimatedProgressRing(
-                      progress: progress,
-                      size: 60,
-                      strokeWidth: 6,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Progress',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                            ),
-                          ),
-                          Text(
-                            '${(progress * 100).toInt()}%',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  _showProgressDetails(context, provider, progress);
+                },
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      AnimatedProgressRing(
+                        progress: progress,
+                        size: 60,
+                        strokeWidth: 6,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Progress',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                              ),
+                            ),
+                            Text(
+                              '${(progress * 100).toInt()}%',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Icon(
+                              Icons.touch_app,
+                              size: 12,
+                              color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 12),
             // XP and Level
             Expanded(
-              child: GlassContainer(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        ShaderMask(
-                          shaderCallback: (bounds) =>
-                              AppColors.cyanPurpleGradient.createShader(bounds),
-                          child: const Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Level ${provider.level}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // XP progress bar
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: provider.levelProgress,
-                        backgroundColor: Theme.of(context).colorScheme.onSurface.withAlpha(25),
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.accentCyan,
-                        ),
-                        minHeight: 6,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${provider.totalXP} XP',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                      ),
-                    ),
-                  ],
-                ),
+              child: LevelProgressWidget(
+                level: provider.level,
+                totalXP: provider.totalXP,
+                levelProgress: provider.levelProgress,
+                onTap: () => _showLevelDetails(context, provider),
               ),
             ),
           ],
@@ -441,6 +424,324 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Awesome!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProfileDetails(BuildContext context, HabitProvider provider) {
+    HapticFeedback.mediumImpact();
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Profile Stats',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildStatRow(context, 'Total Habits', '${provider.totalHabits}', Icons.assignment),
+            _buildStatRow(context, 'Total Completions', '${provider.totalCompletions}', Icons.check_circle),
+            _buildStatRow(context, 'Current Streak', '${provider.currentMaxStreak} days', Icons.local_fire_department),
+            _buildStatRow(context, 'Longest Streak', '${provider.longestStreak} days', Icons.emoji_events),
+            _buildStatRow(context, 'Total XP', '${provider.totalXP}', Icons.star),
+            _buildStatRow(context, 'Achievements', '${provider.user?.unlockedAchievements.length ?? 0}', Icons.emoji_events),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLevelDetails(BuildContext context, HabitProvider provider) {
+    HapticFeedback.mediumImpact();
+    
+    final xpForNextLevel = 100 - (provider.totalXP % 100);
+    final nextLevel = provider.level + 1;
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Level icon
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: AppColors.cyanPurpleGradient,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryPurple.withAlpha(102),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Colors.white, Colors.white70],
+                  ).createShader(bounds),
+                  child: const Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 48,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Level ${provider.level}',
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${provider.totalXP} Total XP',
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Progress to next level
+            GlassContainer(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Progress to Level $nextLevel',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        '${(provider.levelProgress * 100).toInt()}%',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: provider.levelProgress,
+                      backgroundColor: Theme.of(context).colorScheme.onSurface.withAlpha(25),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.accentCyan,
+                      ),
+                      minHeight: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '$xpForNextLevel XP until next level',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '💡 Complete habits to earn XP and level up!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showProgressDetails(BuildContext context, HabitProvider provider, double progress) {
+    HapticFeedback.mediumImpact();
+    
+    final todayHabits = provider.getHabitsForDate(_selectedDate);
+    final completedCount = provider.getTodayCompletedCount();
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "Today's Progress",
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Progress ring
+            AnimatedProgressRing(
+              progress: progress,
+              size: 120,
+              strokeWidth: 12,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              '${(progress * 100).toInt()}% Complete',
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$completedCount of ${todayHabits.length} habits completed',
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+              ),
+            ),
+            const SizedBox(height: 24),
+            if (progress == 1.0)
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: AppColors.greenCyanGradient,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.celebration, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      '🎉 Perfect day!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Text(
+                '💪 Keep going!',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                ),
+              ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatRow(BuildContext context, String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(13),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

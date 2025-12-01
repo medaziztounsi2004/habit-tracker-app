@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Primary colors
-  static const Color primaryPurple = Color(0xFF6C63FF);
-  static const Color secondaryPink = Color(0xFFFF6B9D);
-  static const Color accentCyan = Color(0xFF00D9FF);
+  // Primary colors (Opal-inspired)
+  static const Color primaryPurple = Color(0xFF8B7CF6); // Soft purple
+  static const Color secondaryPink = Color(0xFFE879A9); // Muted pink
+  static const Color accentCyan = Color(0xFF4FD1C5); // Soft teal
   static const Color accentGreen = Color(0xFF00E676);
 
-  // Background colors
-  static const Color darkBackground = Color(0xFF1A1A2E);
-  static const Color darkSurface = Color(0xFF16213E);
-  static const Color darkCard = Color(0xFF1F2942);
+  // Background colors (Opal-inspired)
+  static const Color darkBackground = Color(0xFF0D1321); // Deep navy
+  static const Color darkSurface = Color(0xFF1A1F35); // Semi-transparent dark
+  static const Color darkCard = Color(0xFF1A1F35);
   static const Color lightBackground = Color(0xFFF5F7FA);
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightCard = Color(0xFFF8F9FD);
 
   // Text colors
-  static const Color darkText = Color(0xFFFFFFFF);
+  static const Color darkText = Color(0xFFF7FAFC); // Off-white
   static const Color darkTextSecondary = Color(0xFFB0B0B0);
   static const Color lightText = Color(0xFF1A1A2E);
   static const Color lightTextSecondary = Color(0xFF6B7280);
