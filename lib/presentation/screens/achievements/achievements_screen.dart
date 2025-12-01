@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/achievement_model.dart';
 import '../../../providers/habit_provider.dart';
 import '../../widgets/common/glass_container.dart';
+import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/common/achievement_card.dart';
 
 class AchievementsScreen extends StatelessWidget {
@@ -14,14 +15,15 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HabitProvider>(
-      builder: (context, habitProvider, child) {
-        final unlockedIds = habitProvider.user?.unlockedAchievements ?? [];
-        final achievements = AchievementModel.allAchievements;
-        final unlockedCount = unlockedIds.length;
-        final totalCount = achievements.length;
+    return GalaxyBackground(
+      child: Consumer<HabitProvider>(
+        builder: (context, habitProvider, child) {
+          final unlockedIds = habitProvider.user?.unlockedAchievements ?? [];
+          final achievements = AchievementModel.allAchievements;
+          final unlockedCount = unlockedIds.length;
+          final totalCount = achievements.length;
 
-        return SingleChildScrollView(
+          return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

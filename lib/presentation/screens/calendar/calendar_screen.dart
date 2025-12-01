@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../providers/habit_provider.dart';
 import '../../../core/utils/helpers.dart';
 import '../../widgets/common/glass_container.dart';
+import '../../widgets/common/galaxy_background.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -19,9 +20,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HabitProvider>(
-      builder: (context, habitProvider, child) {
-        return SingleChildScrollView(
+    return GalaxyBackground(
+      child: Consumer<HabitProvider>(
+        builder: (context, habitProvider, child) {
+          return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
