@@ -55,8 +55,9 @@ class _QuitHabitCardState extends State<QuitHabitCard> {
     final minutes = timeSinceQuit.inMinutes % 60;
     final seconds = timeSinceQuit.inSeconds % 60;
 
+    // Calculate money saved (accounts for partial days)
     final moneySaved = widget.habit.moneySavedPerDay != null
-        ? widget.habit.moneySavedPerDay! * days
+        ? widget.habit.moneySavedPerDay! * (timeSinceQuit.inHours / 24.0)
         : 0.0;
 
     // Calculate milestones achieved
