@@ -113,7 +113,7 @@ class AppTheme {
         color: AppColors.darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24), // Increased from 20 for Opal style
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -217,7 +217,7 @@ class AppTheme {
         color: AppColors.lightCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24), // Increased from 20 for Opal style
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
