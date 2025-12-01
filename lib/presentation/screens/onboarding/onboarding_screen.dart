@@ -64,16 +64,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     
     // Add GOOD habits (to build)
     for (final habitName in selectedGoodHabits) {
-      final habit = HabitSuggestions.goodHabits.firstWhere(
+      final habitData = HabitSuggestions.goodHabits.firstWhere(
         (h) => h['name'] == habitName,
-        orElse: () => {'name': habitName, 'icon': '✨', 'category': 'General'},
+        orElse: () => <String, dynamic>{},
       );
       
+      // Skip if habit not found
+      if (habitData.isEmpty) continue;
+      
       await habitProvider.addHabit(
-        name: habit['name'] as String,
-        iconIndex: _getIconIndex(habit['icon'] as String),
+        name: habitData['name'] as String,
+        iconIndex: _getIconIndex(habitData['icon'] as String),
         colorIndex: 0,
-        category: habit['category'] as String,
+        category: habitData['category'] as String,
         scheduledDays: [0, 1, 2, 3, 4, 5, 6], // Every day
         targetDaysPerWeek: 7,
         isQuitHabit: false,
@@ -82,21 +85,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     
     // Add BAD habits (to quit)
     for (final habitName in selectedBadHabits) {
-      final habit = HabitSuggestions.badHabits.firstWhere(
+      final habitData = HabitSuggestions.badHabits.firstWhere(
         (h) => h['name'] == habitName,
-        orElse: () => {'name': habitName, 'icon': '🚫', 'category': 'General', 'moneyPerDay': 0.0},
+        orElse: () => <String, dynamic>{},
       );
       
+      // Skip if habit not found
+      if (habitData.isEmpty) continue;
+      
       await habitProvider.addHabit(
-        name: habit['name'] as String,
-        iconIndex: _getIconIndex(habit['icon'] as String),
+        name: habitData['name'] as String,
+        iconIndex: _getIconIndex(habitData['icon'] as String),
         colorIndex: 1,
-        category: habit['category'] as String,
+        category: habitData['category'] as String,
         scheduledDays: [0, 1, 2, 3, 4, 5, 6],
         targetDaysPerWeek: 7,
         isQuitHabit: true,
         quitStartDate: DateTime.now(),
-        moneySavedPerDay: (habit['moneyPerDay'] as num?)?.toDouble(),
+        moneySavedPerDay: (habitData['moneyPerDay'] as num?)?.toDouble(),
       );
     }
     
@@ -106,9 +112,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   int _getIconIndex(String emoji) {
-    // Map emoji to icon index (simple hash for now)
-    // In a real app, you'd want a proper mapping
-    return emoji.hashCode % 20;
+    // Map emoji to a valid icon index
+    // Use hashCode and ensure it's within valid range of available icons
+    final iconCount = AppConstants.habitIcons.length;
+    return emoji.hashCode.abs() % iconCount;
   }
 
   @override

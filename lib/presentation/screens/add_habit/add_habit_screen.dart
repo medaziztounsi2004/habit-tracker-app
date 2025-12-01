@@ -220,7 +220,9 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Autocomplete<Map<String, dynamic>>(
+        RawAutocomplete<Map<String, dynamic>>(
+          textEditingController: _nameController,
+          focusNode: FocusNode(),
           optionsBuilder: (TextEditingValue textEditingValue) {
             if (textEditingValue.text.isEmpty) {
               return const Iterable<Map<String, dynamic>>.empty();
@@ -243,17 +245,11 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             }
           },
           fieldViewBuilder: (BuildContext context,
-              TextEditingController fieldController,
+              TextEditingController textEditingController,
               FocusNode focusNode,
               VoidCallback onFieldSubmitted) {
-            // Sync with our main controller
-            fieldController.text = _nameController.text;
-            fieldController.addListener(() {
-              _nameController.text = fieldController.text;
-            });
-
             return TextFormField(
-              controller: fieldController,
+              controller: textEditingController,
               focusNode: focusNode,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
