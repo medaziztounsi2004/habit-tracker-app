@@ -6,6 +6,7 @@ import 'package:animate_do/animate_do.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/habit_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/onboarding_provider.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/calendar/calendar_screen.dart';
 import 'presentation/screens/statistics/statistics_screen.dart';
@@ -38,6 +39,7 @@ class HabitTrackerApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()..init()),
         ChangeNotifierProvider(create: (_) => HabitProvider()..init()),
+        ChangeNotifierProvider(create: (_) => OnboardingProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

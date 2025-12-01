@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../providers/habit_provider.dart';
 import '../../widgets/common/glass_container.dart';
+import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/charts/weekly_chart.dart';
 import '../../widgets/charts/heat_map.dart';
 
@@ -20,13 +21,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HabitProvider>(
-      builder: (context, habitProvider, child) {
-        final weeklyRates = habitProvider.getWeeklyCompletionRates();
-        final monthCompletions = habitProvider.getMonthCompletions(_selectedMonth);
-        final bestHabits = habitProvider.getBestPerformingHabits();
+    return GalaxyBackground(
+      child: Consumer<HabitProvider>(
+        builder: (context, habitProvider, child) {
+          final weeklyRates = habitProvider.getWeeklyCompletionRates();
+          final monthCompletions = habitProvider.getMonthCompletions(_selectedMonth);
+          final bestHabits = habitProvider.getBestPerformingHabits();
 
-        return SingleChildScrollView(
+          return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
