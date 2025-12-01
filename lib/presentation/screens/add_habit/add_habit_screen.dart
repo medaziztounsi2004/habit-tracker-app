@@ -30,12 +30,14 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   int _targetDaysPerWeek = 5;
   TimeOfDay? _reminderTime;
   bool _isLoading = false;
+  late FocusNode _nameFocusNode;
 
   bool get isEditing => widget.habitToEdit != null;
 
   @override
   void initState() {
     super.initState();
+    _nameFocusNode = FocusNode();
     if (isEditing) {
       _nameController.text = widget.habitToEdit!.name;
       _descriptionController.text = widget.habitToEdit!.description ?? '';
@@ -58,6 +60,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 
@@ -222,7 +225,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
         const SizedBox(height: 8),
         RawAutocomplete<Map<String, dynamic>>(
           textEditingController: _nameController,
-          focusNode: FocusNode(),
+          focusNode: _nameFocusNode,
           optionsBuilder: (TextEditingValue textEditingValue) {
             if (textEditingValue.text.isEmpty) {
               return const Iterable<Map<String, dynamic>>.empty();
