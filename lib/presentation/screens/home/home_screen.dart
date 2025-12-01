@@ -12,6 +12,7 @@ import '../../widgets/common/glass_container.dart';
 import '../../widgets/common/animated_progress_ring.dart';
 import '../../widgets/common/profile_header.dart';
 import '../../widgets/common/level_progress.dart';
+import '../../widgets/common/motivational_quote_card.dart';
 import '../../widgets/habit/habit_list.dart';
 import '../../widgets/animations/scale_animation.dart';
 import '../add_habit/add_habit_screen.dart';
@@ -98,6 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Stats row
                     _buildStatsRow(context, habitProvider, progress),
                     const SizedBox(height: 24),
+                    // Motivational Quote
+                    FadeInUp(
+                      duration: const Duration(milliseconds: 500),
+                      delay: const Duration(milliseconds: 250),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: MotivationalQuoteCard(),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                     // Today's habits title
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -156,76 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, String name, String emoji) {
-    return FadeInDown(
-      duration: const Duration(milliseconds: 500),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppConstants.getGreeting(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(emoji, style: const TextStyle(fontSize: 24)),
-                  ],
-                ),
-              ],
-            ),
-            // Streak indicator
-            Consumer<HabitProvider>(
-              builder: (context, provider, child) {
-                final streak = provider.currentMaxStreak;
-                return PulseAnimation(
-                  active: streak > 0,
-                  child: GlassContainer(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.local_fire_department,
-                          color: streak > 0 ? Colors.orange : Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '$streak',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: streak > 0 ? Colors.orange : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 
