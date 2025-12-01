@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../data/models/habit_model.dart';
@@ -28,6 +29,9 @@ class _QuitHabitCardState extends State<QuitHabitCard> {
   void initState() {
     super.initState();
     // Update timer every second
+    // Note: This triggers a rebuild of the widget every second.
+    // For optimization, consider using StreamBuilder or ValueListenable
+    // if performance becomes an issue with many quit habits.
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
@@ -56,8 +60,9 @@ class _QuitHabitCardState extends State<QuitHabitCard> {
         : 0.0;
 
     // Calculate milestones achieved
-    final milestones = [1, 3, 7, 14, 30, 60, 90, 180, 365];
-    final achievedMilestones = milestones.where((m) => days >= m).toList();
+    final achievedMilestones = AppConstants.quitHabitMilestones
+        .where((m) => days >= m)
+        .toList();
 
     return GlassContainer(
       padding: const EdgeInsets.all(20),
@@ -301,8 +306,7 @@ class _QuitHabitCardState extends State<QuitHabitCard> {
   }
 
   String _formatDate(DateTime date) {
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+    return DateFormat('MMM d, y').format(date);
   }
 
   void _showPanicModal(BuildContext context) {
