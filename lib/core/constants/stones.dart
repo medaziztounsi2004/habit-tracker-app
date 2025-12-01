@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/stone_model.dart';
+import '../../data/models/stone_model.dart';
 
 class StonesConstants {
   static List<StoneModel> getAllStones() {
