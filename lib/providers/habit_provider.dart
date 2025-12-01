@@ -20,6 +20,8 @@ class HabitProvider extends ChangeNotifier {
   // Getters
   List<HabitModel> get habits => _habits;
   List<HabitModel> get todayHabits => _repository.getHabitsForToday();
+  List<HabitModel> get quitHabits => _habits.where((h) => h.isQuitHabit && !h.isArchived).toList();
+  List<HabitModel> get buildHabits => _habits.where((h) => !h.isQuitHabit && !h.isArchived).toList();
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -284,5 +286,23 @@ class HabitProvider extends ChangeNotifier {
     if (todayHabits.isEmpty) return false;
     final todayKey = Helpers.formatDateForStorage(DateTime.now());
     return todayHabits.every((h) => h.isCompletedOn(todayKey));
+  }
+
+  // Record a relapse for a quit habit
+  Future<void> recordRelapse(String habitId) async {
+    final habit = _repository.getHabitById(habitId);
+    if (habit == null || !habit.isQuitHabit) return;
+
+    final updatedRelapses = List<DateTime>.from(habit.relapses ?? []);
+    updatedRelapses.add(DateTime.now());
+
+    final updatedHabit = habit.copyWith(
+      relapses: updatedRelapses,
+      quitStartDate: DateTime.now(), // Reset the quit timer
+    );
+
+    await _repository.updateHabit(updatedHabit);
+    _habits = _repository.getAllHabits();
+    notifyListeners();
   }
 }

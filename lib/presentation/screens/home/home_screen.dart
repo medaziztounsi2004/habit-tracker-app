@@ -16,6 +16,7 @@ import '../../widgets/common/motivational_quote_card.dart';
 import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/habit/habit_list.dart';
 import '../../widgets/animations/scale_animation.dart';
+import '../../widgets/quit/quit_habit_card.dart';
 import '../add_habit/add_habit_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -50,7 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<HabitProvider>(
       builder: (context, habitProvider, child) {
         final user = habitProvider.user;
-        final todayHabits = habitProvider.getHabitsForDate(_selectedDate);
+        final todayHabits = habitProvider.getHabitsForDate(_selectedDate).where((h) => !h.isQuitHabit).toList();
+        final quitHabits = habitProvider.quitHabits;
         final progress = habitProvider.getTodayProgress();
 
         // Check for newly unlocked achievements
@@ -111,6 +113,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
+                    // Quit Habits Section
+                    if (quitHabits.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.block,
+                              color: AppColors.error,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Habits I\'m Quitting',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ...quitHabits.map((habit) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12, left: 20, right: 20),
+                        child: QuitHabitCard(habit: habit),
+                      )),
+                      const SizedBox(height: 24),
+                    ],
                     // Today's habits title
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
