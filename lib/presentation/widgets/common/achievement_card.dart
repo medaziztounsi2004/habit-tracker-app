@@ -28,11 +28,10 @@ class AchievementCard extends StatelessWidget {
       child: GlassContainer(
         padding: const EdgeInsets.all(10),
         borderRadius: 20,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
               // Icon with gradient background
               Container(
                 width: 48,

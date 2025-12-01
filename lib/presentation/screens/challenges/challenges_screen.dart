@@ -48,10 +48,16 @@ class ChallengesScreen extends StatelessWidget {
             delay: const Duration(milliseconds: 100),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: ChallengeModel.predefinedChallenges
-                    .map((challenge) => _buildChallengeCard(context, challenge))
-                    .toList(),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: ChallengeModel.predefinedChallenges.length,
+                itemBuilder: (context, index) {
+                  return _buildChallengeCard(
+                    context,
+                    ChallengeModel.predefinedChallenges[index],
+                  );
+                },
               ),
             ),
           ),
