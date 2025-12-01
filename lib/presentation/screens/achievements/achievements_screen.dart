@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -6,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/achievement_model.dart';
 import '../../../providers/habit_provider.dart';
 import '../../widgets/common/glass_container.dart';
+import '../../widgets/common/achievement_card.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
@@ -267,6 +269,162 @@ class AchievementsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showAchievementDetails(
+    BuildContext context,
+    AchievementModel achievement,
+    bool isUnlocked,
+  ) {
+    HapticFeedback.mediumImpact();
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Icon
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: isUnlocked
+                    ? LinearGradient(
+                        colors: achievement.gradientColors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : LinearGradient(
+                        colors: [
+                          Colors.grey.withAlpha(76),
+                          Colors.grey.withAlpha(51),
+                        ],
+                      ),
+                shape: BoxShape.circle,
+                boxShadow: isUnlocked
+                    ? [
+                        BoxShadow(
+                          color: achievement.gradientColors.first.withAlpha(102),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Center(
+                child: isUnlocked
+                    ? Text(
+                        achievement.iconEmoji,
+                        style: const TextStyle(fontSize: 40),
+                      )
+                    : Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ColorFiltered(
+                            colorFilter: const ColorFilter.mode(
+                              Colors.grey,
+                              BlendMode.saturation,
+                            ),
+                            child: Text(
+                              achievement.iconEmoji,
+                              style: const TextStyle(fontSize: 40),
+                            ),
+                          ),
+                          Icon(
+                            Icons.lock,
+                            color: Colors.white.withAlpha(204),
+                            size: 28,
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Name
+            Text(
+              achievement.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            // Description
+            Text(
+              achievement.description,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            // XP reward
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: isUnlocked ? AppColors.greenCyanGradient : null,
+                color: isUnlocked
+                    ? null
+                    : Theme.of(context).colorScheme.onSurface.withAlpha(25),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: isUnlocked ? Colors.white : Colors.grey,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '+${achievement.xpReward} XP',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isUnlocked
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onSurface.withAlpha(102),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Status
+            Text(
+              isUnlocked ? '✅ Unlocked' : '🔒 Locked',
+              style: TextStyle(
+                fontSize: 14,
+                color: isUnlocked ? Colors.green : Colors.grey,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

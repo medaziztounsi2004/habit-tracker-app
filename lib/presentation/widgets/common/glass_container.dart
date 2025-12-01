@@ -12,6 +12,9 @@ class GlassContainer extends StatelessWidget {
   final double opacity;
   final VoidCallback? onTap;
 
+  // Opal-inspired glassmorphism opacity factor (0.8 = 80% of base opacity for softer effect)
+  static const double _opalOpacityFactor = 0.8;
+
   const GlassContainer({
     super.key,
     required this.child,
@@ -39,18 +42,19 @@ class GlassContainer extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
           color: isDark 
-              ? Colors.white.withAlpha((opacity * 255).round())
+              ? Colors.white.withAlpha((opacity * 255 * _opalOpacityFactor).round())
               : Colors.black.withAlpha((opacity * 0.5 * 255).round()),
           border: Border.all(
             color: borderColor ?? 
-                (isDark ? Colors.white.withAlpha(25) : Colors.black.withAlpha(13)),
-            width: 1.5,
+                (isDark ? Colors.white.withAlpha(20) : Colors.black.withAlpha(13)),
+            width: 1.0,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(13),
+              color: Colors.black.withAlpha(isDark ? 20 : 13),
               blurRadius: blur,
               spreadRadius: 0,
+              offset: const Offset(0, 2),
             ),
           ],
         ),

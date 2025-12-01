@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../../core/theme/app_theme.dart';
@@ -115,7 +116,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 // Avatar
                 GestureDetector(
-                  onTap: () => _showAvatarPicker(context, habitProvider),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _showAvatarPicker(context, habitProvider);
+                  },
                   child: Container(
                     width: 80,
                     height: 80,
@@ -180,7 +184,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   )
                 else
                   GestureDetector(
-                    onTap: () => setState(() => _isEditingName = true),
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      setState(() => _isEditingName = true);
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -292,7 +299,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const Icon(Icons.chevron_right),
                     ],
                   ),
-                  onTap: () => _showColorPicker(context, themeProvider),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _showColorPicker(context, themeProvider);
+                  },
                 ),
               ],
             ),
@@ -313,7 +323,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Notifications',
+            'Notifications & Feedback',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -322,17 +332,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           GlassContainer(
             padding: const EdgeInsets.all(4),
-            child: _buildSettingsTile(
-              context,
-              icon: Icons.notifications,
-              title: 'Habit Reminders',
-              subtitle: user?.notificationsEnabled == true ? 'Enabled' : 'Disabled',
-              trailing: Switch(
-                value: user?.notificationsEnabled ?? true,
-                onChanged: (value) {
-                  habitProvider.updateUser(notificationsEnabled: value);
-                },
-              ),
+            child: Column(
+              children: [
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.notifications,
+                  title: 'Habit Reminders',
+                  subtitle: user?.notificationsEnabled == true ? 'Enabled' : 'Disabled',
+                  trailing: Switch(
+                    value: user?.notificationsEnabled ?? true,
+                    onChanged: (value) {
+                      HapticFeedback.lightImpact();
+                      habitProvider.updateUser(notificationsEnabled: value);
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],
