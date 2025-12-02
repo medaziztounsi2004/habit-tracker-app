@@ -7,6 +7,8 @@ class PremiumStatsChart extends StatelessWidget {
   final List<double> weekData;
   final String selectedPeriod; // 'Week', 'Month', 'Lifetime'
   
+  static const List<String> _daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  
   const PremiumStatsChart({
     super.key,
     required this.weekData,
@@ -45,12 +47,11 @@ class PremiumStatsChart extends StatelessWidget {
                 reservedSize: 30,
                 interval: 1,
                 getTitlesWidget: (value, meta) {
-                  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                  if (value.toInt() >= 0 && value.toInt() < days.length) {
+                  if (value.toInt() >= 0 && value.toInt() < _daysOfWeek.length) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        days[value.toInt()],
+                        _daysOfWeek[value.toInt()],
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                           fontSize: 10,
@@ -129,6 +130,8 @@ class PeriodSelector extends StatelessWidget {
   final String selectedPeriod;
   final Function(String) onPeriodChanged;
   
+  static const List<String> _periods = ['Week', 'Month', 'Lifetime'];
+  
   const PeriodSelector({
     super.key,
     required this.selectedPeriod,
@@ -137,8 +140,6 @@ class PeriodSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const periods = ['Week', 'Month', 'Lifetime'];
-    
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -146,7 +147,7 @@ class PeriodSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: periods.map((period) {
+        children: _periods.map((period) {
           final isSelected = period == selectedPeriod;
           return Expanded(
             child: GestureDetector(
