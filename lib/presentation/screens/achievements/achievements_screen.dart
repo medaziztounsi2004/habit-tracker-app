@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/premium_icons.dart';
 import '../../../core/constants/stones.dart';
 import '../../../data/models/achievement_model.dart';
+import '../../../data/models/stone_model.dart';
 import '../../../providers/habit_provider.dart';
 import '../../widgets/common/glass_container.dart';
 import '../../widgets/common/galaxy_background.dart';
