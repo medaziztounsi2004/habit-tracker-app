@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// Shader-based gloss overlay for premium surfaces
 class ShaderGlossOverlay extends StatefulWidget {
@@ -46,7 +46,11 @@ class _ShaderGlossOverlayState extends State<ShaderGlossOverlay>
         _shader = program.fragmentShader();
       });
     } catch (e) {
-      // Shader not supported or failed to load
+      // Shader not supported or failed to load - use fallback
+      // This is expected on some platforms (e.g., web browsers without WebGL)
+      if (widget.enabled) {
+        debugPrint('Shader gloss fallback: $e');
+      }
       setState(() {
         _shaderLoadFailed = true;
       });

@@ -182,11 +182,19 @@ class _SmartBlurContainerState extends State<SmartBlurContainer>
                     // Layer 4: Shader gloss overlay
                     if (widget.enableShaderGloss)
                       Positioned.fill(
-                        child: ShaderGlossOverlay(
-                          width: widget.width ?? double.infinity,
-                          height: widget.height ?? double.infinity,
-                          motionFactor: combinedMotion,
-                          enabled: widget.enableShaderGloss,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return ShaderGlossOverlay(
+                              width: constraints.maxWidth.isFinite 
+                                  ? constraints.maxWidth 
+                                  : 1000, // Reasonable fallback
+                              height: constraints.maxHeight.isFinite 
+                                  ? constraints.maxHeight 
+                                  : 1000, // Reasonable fallback
+                              motionFactor: combinedMotion,
+                              enabled: widget.enableShaderGloss,
+                            );
+                          },
                         ),
                       ),
                     

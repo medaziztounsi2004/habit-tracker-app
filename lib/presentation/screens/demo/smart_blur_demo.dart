@@ -5,6 +5,12 @@ import 'package:habit_tracker_app/core/theme/app_theme.dart';
 
 /// Demo screen showcasing SmartBlurContainer features
 /// This can be used for testing and demonstration purposes
+/// 
+/// NOTE: This file is intended for development and testing only.
+/// Consider excluding from production builds or removing after QA approval.
+/// 
+/// To exclude from release builds, you can use tree-shaking by ensuring
+/// this file is never imported in production code paths.
 class SmartBlurDemo extends StatefulWidget {
   const SmartBlurDemo({super.key});
 
