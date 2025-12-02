@@ -6,7 +6,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/premium_icons.dart';
-import '../../../core/constants/stones.dart';
 import '../../../data/models/achievement_model.dart';
 import '../../../data/models/stone_model.dart';
 import '../../../providers/habit_provider.dart';
@@ -24,7 +23,7 @@ class AchievementsScreen extends StatelessWidget {
         builder: (context, habitProvider, child) {
           final user = habitProvider.user;
           final unlockedStones = user?.unlockedStones ?? [];
-          final allStones = StonesConstants.getAllStones();
+          final allStones = StoneModel.allStones;
           final unlockedCount = unlockedStones.length;
           final totalCount = allStones.length;
 
