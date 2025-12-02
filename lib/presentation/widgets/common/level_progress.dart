@@ -32,6 +32,7 @@ class LevelProgressWidget extends StatelessWidget {
       child: GlassContainer(
         padding: const EdgeInsets.all(16),
         borderRadius: 20,
+        useBackdropFilter: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,18 +48,19 @@ class LevelProgressWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
+                const Text(
                   'Level $level',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 const Spacer(),
                 Icon(
                   Icons.touch_app,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(102),
+                  color: Colors.white.withOpacity(0.4),
                 ),
               ],
             ),
@@ -68,9 +70,8 @@ class LevelProgressWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: levelProgress,
-                backgroundColor:
-                    Theme.of(context).colorScheme.onSurface.withAlpha(25),
-                valueColor: AlwaysStoppedAnimation<Color>(
+                backgroundColor: Colors.white.withOpacity(0.1),
+                valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.accentCyan,
                 ),
                 minHeight: 6,
@@ -85,14 +86,14 @@ class LevelProgressWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    color: Colors.white.withOpacity(0.6),
                   ),
                 ),
                 Text(
                   '$xpForNextLevel XP to Level ${level + 1}',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    color: Colors.white.withOpacity(0.6),
                   ),
                 ),
               ],
