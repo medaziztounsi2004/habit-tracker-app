@@ -58,8 +58,14 @@ class ProfileHeader extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      user?.avatarEmoji ?? '😊',
-                      style: const TextStyle(fontSize: 32),
+                      user?.name?.isNotEmpty == true 
+                          ? user!.name[0].toUpperCase()
+                          : 'U',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

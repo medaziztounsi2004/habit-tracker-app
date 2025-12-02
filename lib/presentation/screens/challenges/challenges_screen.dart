@@ -13,17 +13,17 @@ class ChallengesScreen extends StatelessWidget {
   // Helper to map emoji to icon
   IconData _getChallengeIcon(String emoji) {
     switch (emoji) {
-      case '🔥':
-        return Iconsax.flame;
-      case '💪':
+      case 'flash':
+        return Iconsax.flash_1;
+      case 'strength':
         return Iconsax.chart;
-      case '📚':
+      case 'book':
         return Iconsax.book_1;
-      case '🏆':
+      case 'cup':
         return Iconsax.cup;
-      case '⭐':
+      case 'star':
         return Iconsax.star_1;
-      case '🌅':
+      case 'sun':
         return Iconsax.sun_1;
       default:
         return Iconsax.flash_1;

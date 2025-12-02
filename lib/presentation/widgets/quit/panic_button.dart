@@ -111,14 +111,21 @@ class PanicButton extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               // Title
-              const Text(
-                'You Got This! 💪',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.fitness_center, color: Colors.white, size: 28),
+                  SizedBox(width: 12),
+                  Text(
+                    'You Got This!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(
