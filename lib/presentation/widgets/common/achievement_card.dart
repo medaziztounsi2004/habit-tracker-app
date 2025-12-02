@@ -21,21 +21,21 @@ class AchievementCard extends StatelessWidget {
   // Helper to map achievement emoji to icon
   IconData _getAchievementIcon(String emoji) {
     switch (emoji) {
-      case '🔥':
-        return Iconsax.flame;
-      case '⭐':
+      case 'flash':
+        return Iconsax.flash_1;
+      case 'star':
         return Iconsax.star_1;
-      case '💎':
-        return Iconsax.medal_star;
-      case '🏅':
+      case 'diamond':
+        return Iconsax.diamond_1;
+      case 'award':
         return Iconsax.award;
-      case '👑':
+      case 'crown':
         return Iconsax.crown_1;
-      case '🚀':
+      case 'rocket':
         return Iconsax.rocket_1;
-      case '🎯':
-        return Iconsax.target;
-      case '🏆':
+      case 'focus':
+        return Iconsax.focus;
+      case 'cup':
         return Iconsax.cup;
       default:
         return Iconsax.award;

@@ -146,8 +146,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        user?.avatarEmoji ?? '😊',
-                        style: const TextStyle(fontSize: 36),
+                        user?.name?.isNotEmpty == true 
+                            ? user!.name[0].toUpperCase()
+                            : 'U',
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

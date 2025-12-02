@@ -123,10 +123,17 @@ class _BreathingExerciseState extends State<BreathingExercise>
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.darkCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          '🎉 Great Job!',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.celebration, color: Colors.white),
+            SizedBox(width: 8),
+            Text(
+              'Great Job!',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
         ),
         content: const Text(
           'You completed the breathing exercise.\nFeeling better?',

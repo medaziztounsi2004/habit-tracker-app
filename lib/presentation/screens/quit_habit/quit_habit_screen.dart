@@ -211,13 +211,19 @@ class _QuitHabitScreenState extends State<QuitHabitScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '💪 Health Benefits',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    Row(
+                      children: const [
+                        Icon(Icons.fitness_center, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          'Health Benefits',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     ...widget.badHabit.healthBenefits.map((benefit) {

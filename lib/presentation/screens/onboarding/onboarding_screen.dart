@@ -928,16 +928,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: [
                             Icon(
                               Iconsax.cup,
-                              size: 20,
+                              size: 18,
                               color: Colors.white,
                             ),
-                            const SizedBox(width: 8),
-                            const Text(
-                              'You earned your first stone!',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                'You earned your first stone!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],

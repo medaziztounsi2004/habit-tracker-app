@@ -18,21 +18,21 @@ class AchievementsScreen extends StatelessWidget {
   // Helper to map achievement emoji to icon
   IconData _getAchievementIcon(String emoji) {
     switch (emoji) {
-      case '🔥':
-        return Iconsax.flame;
-      case '⭐':
+      case 'flash':
+        return Iconsax.flash_1;
+      case 'star':
         return Iconsax.star_1;
-      case '💎':
-        return Iconsax.medal_star;
-      case '🏅':
+      case 'diamond':
+        return Iconsax.diamond_1;
+      case 'award':
         return Iconsax.award;
-      case '👑':
+      case 'crown':
         return Iconsax.crown_1;
-      case '🚀':
+      case 'rocket':
         return Iconsax.rocket_1;
-      case '🎯':
-        return Iconsax.target;
-      case '🏆':
+      case 'focus':
+        return Iconsax.focus;
+      case 'cup':
         return Iconsax.cup;
       default:
         return Iconsax.award;
@@ -456,13 +456,24 @@ class AchievementsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 // Status
-                Text(
-                  isUnlocked ? '✅ Unlocked' : '🔒 Locked',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: isUnlocked ? Colors.green : Colors.grey,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      isUnlocked ? Iconsax.tick_circle : Icons.lock,
+                      size: 16,
+                      color: isUnlocked ? Colors.green : Colors.grey,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      isUnlocked ? 'Unlocked' : 'Locked',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isUnlocked ? Colors.green : Colors.grey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
               ],
@@ -476,13 +487,13 @@ class AchievementsScreen extends StatelessWidget {
   String _getCategoryName(AchievementCategory category) {
     switch (category) {
       case AchievementCategory.streaks:
-        return '🔥 Streaks';
+        return 'Streaks';
       case AchievementCategory.completions:
-        return '✅ Completions';
+        return 'Completions';
       case AchievementCategory.habits:
-        return '📋 Habits';
+        return 'Habits';
       case AchievementCategory.milestones:
-        return '🏆 Milestones';
+        return 'Milestones';
     }
   }
 }

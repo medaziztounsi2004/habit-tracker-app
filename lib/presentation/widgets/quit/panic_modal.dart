@@ -52,13 +52,20 @@ class PanicModal extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             // Title
-            const Text(
-              'You Got This! 💪',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.fitness_center, size: 28),
+                SizedBox(width: 12),
+                Text(
+                  'You Got This!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text(

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:confetti/confetti.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/helpers.dart';
@@ -585,13 +586,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              '💡 Complete habits to earn XP and level up!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Iconsax.lamp_1,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Complete habits to earn XP and level up!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
           ],
@@ -672,24 +683,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Icon(Icons.celebration, color: Colors.white),
                     const SizedBox(width: 8),
-                    const Text(
-                      '🎉 Perfect day!',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Iconsax.emoji_happy,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Perfect day!',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               )
             else
-              Text(
-                '💪 Keep going!',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Iconsax.flash_1,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Keep going!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    ),
+                  ),
+                ],
               ),
             const SizedBox(height: 24),
           ],
