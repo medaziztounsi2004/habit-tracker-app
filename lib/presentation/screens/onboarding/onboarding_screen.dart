@@ -867,29 +867,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       builder: (context, provider, child) {
         return Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: AppColors.primaryGradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryPurple.withAlpha(102),
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: AppColors.primaryGradient,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryPurple.withAlpha(102),
+                            blurRadius: 30,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text('✨', style: TextStyle(fontSize: 70)),
+                      ),
                     ),
-                    child: const Center(
-                      child: Text('✨', style: TextStyle(fontSize: 70)),
-                    ),
-                  ),
                   const SizedBox(height: 40),
                   const Text(
                     'All Set!',
@@ -953,7 +954,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: double.infinity,
                     icon: Icons.rocket_launch,
                   ),
-                ],
+                  ],
+                ),
               ),
             ),
             Align(
