@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:iconsax/iconsax.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/avatars.dart';
-import '../../../core/constants/premium_icons.dart';
 import '../../../data/models/stone_model.dart';
 import '../../../providers/habit_provider.dart';
-import '../../widgets/common/smart_blur_container.dart';
 import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/common/crystal_stone.dart';
 import '../../widgets/common/premium_stats_chart.dart';
+import '../../widgets/common/premium_profile_header.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -95,6 +92,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Premium Profile Header
+              FadeInDown(
+                duration: const Duration(milliseconds: 500),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: PremiumProfileHeader(
+                    user: user,
+                    totalHabits: habitProvider.totalHabits,
+                    completedToday: habitProvider.completedTodayCount,
+                    totalToday: habitProvider.totalTodayCount,
+                    currentStreak: habitProvider.currentMaxStreak,
+                    longestStreak: habitProvider.longestStreak,
+                    levelProgress: habitProvider.levelProgress,
                   ),
                 ),
               ),

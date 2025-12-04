@@ -305,7 +305,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
                         ),
                         child: Center(
                           child: Text(
-                            widget.user?.name?.isNotEmpty == true
+                            widget.user?.name.isNotEmpty == true
                                 ? widget.user!.name[0].toUpperCase()
                                 : 'U',
                             style: const TextStyle(
@@ -477,7 +477,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
             color: AppColors.accentGreen,
             onTap: () {
               HapticFeedback.mediumImpact();
-              // Navigate to add habit
+              Navigator.of(context).pushNamed('/addHabit');
             },
           ),
         ),
@@ -489,7 +489,11 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
             color: AppColors.primaryPurple,
             onTap: () {
               HapticFeedback.mediumImpact();
-              widget.onStatsTap?.call();
+              if (widget.onStatsTap != null) {
+                widget.onStatsTap!.call();
+              } else {
+                Navigator.of(context).pushNamed('/stats');
+              }
             },
           ),
         ),
@@ -501,7 +505,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
             color: Colors.blueGrey,
             onTap: () {
               HapticFeedback.mediumImpact();
-              // Navigate to settings
+              Navigator.of(context).pushNamed('/settings');
             },
           ),
         ),

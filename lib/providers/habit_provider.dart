@@ -35,7 +35,22 @@ class HabitProvider extends ChangeNotifier {
   int get currentMaxStreak => _repository.getCurrentMaxStreak();
   int get totalXP => _user?.totalXP ?? 0;
   int get level => _user?.level ?? 0;
-  double get levelProgress => _user?.levelProgress ?? 0;
+  double get levelProgress {
+    if (_user?.levelProgress != null) {
+      return _user!.levelProgress;
+    }
+    const xpPerLevel = 100;
+    final xp = _user?.totalXP ?? 0;
+    final remainder = xp % xpPerLevel;
+    return (remainder / xpPerLevel).clamp(0.0, 1.0);
+  }
+
+  int get completedTodayCount {
+    final todayKey = Helpers.formatDateForStorage(DateTime.now());
+    return todayHabits.where((h) => h.isCompletedOn(todayKey)).length;
+  }
+
+  int get totalTodayCount => todayHabits.length;
 
   Future<void> init() async {
     try {
@@ -46,9 +61,7 @@ class HabitProvider extends ChangeNotifier {
       await _notificationService.init();
 
       _user = _repository.getUser();
-      if (_user == null) {
-        _user = await _repository.createDefaultUser();
-      }
+      _user ??= await _repository.createDefaultUser();
 
       _habits = _repository.getAllHabits();
       _isLoading = false;
