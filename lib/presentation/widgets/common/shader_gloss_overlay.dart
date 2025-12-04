@@ -88,26 +88,7 @@ class _ShaderGlossOverlayState extends State<ShaderGlossOverlay>
 
   /// Fallback gloss effect when shaders are not available
   Widget _buildFallbackGloss() {
-    if (!widget.enabled) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      width: widget.width,
-      height: widget.height,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.15 * (1 + widget.motionFactor * 0.5)),
-            Colors.white.withOpacity(0.0),
-            Colors.cyan.withOpacity(0.05 * widget.motionFactor),
-          ],
-          stops: const [0.0, 0.5, 1.0],
-        ),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 }
 

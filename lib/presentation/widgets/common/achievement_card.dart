@@ -26,15 +26,15 @@ class AchievementCard extends StatelessWidget {
       case 'star':
         return Iconsax.star_1;
       case 'diamond':
-        return Iconsax.diamond_1;
+        return Iconsax.diamonds;
       case 'award':
         return Iconsax.award;
       case 'crown':
         return Iconsax.crown_1;
       case 'rocket':
-        return Iconsax.rocket_1;
+        return Iconsax.send_2;
       case 'focus':
-        return Iconsax.focus;
+        return Iconsax.lamp_charge;
       case 'cup':
         return Iconsax.cup;
       default:

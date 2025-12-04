@@ -106,11 +106,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 delay: const Duration(milliseconds: 100),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: SmartBlurContainer(
+                  child: Container(
                     padding: const EdgeInsets.all(24),
-                    enableBackdropFilter: true,
-                    enableShaderGloss: true,
-                    motionFactor: _scrollProgress,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey.shade900.withOpacity(0.4),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.08),
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
                     child: Column(
                       children: [
                         // Avatar with golden glowing frame
@@ -285,11 +298,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 delay: const Duration(milliseconds: 400),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: SmartBlurContainer(
+                  child: Container(
                     padding: const EdgeInsets.all(16),
-                    enableBackdropFilter: true,
-                    enableShaderGloss: true,
-                    motionFactor: _scrollProgress,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey.shade900.withOpacity(0.4),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.08),
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -389,11 +415,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     IconData icon,
     LinearGradient gradient,
   ) {
-    return SmartBlurContainer(
+    return Container(
       padding: const EdgeInsets.all(20),
-      enableBackdropFilter: true,
-      enableShaderGloss: true,
-      motionFactor: _scrollProgress,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade900.withOpacity(0.4),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.08),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 0,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -459,11 +498,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     IconData icon,
     LinearGradient gradient,
   ) {
-    return SmartBlurContainer(
+    return Container(
       padding: const EdgeInsets.all(16),
-      enableBackdropFilter: true,
-      enableShaderGloss: true,
-      motionFactor: _scrollProgress,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade900.withOpacity(0.4),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.08),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 0,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

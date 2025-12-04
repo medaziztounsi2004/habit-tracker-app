@@ -19,14 +19,14 @@ class IconPicker extends StatelessWidget {
     Iconsax.flash_1,
     Iconsax.activity,
     Iconsax.heart_tick,
-    Iconsax.running,
-    Iconsax.bicycle,
+    Iconsax.health,
+    Iconsax.weight,
     Iconsax.weight_1,
     
     // Food & Drink
     Iconsax.drop,
     Iconsax.coffee,
-    Iconsax.apple,
+    Iconsax.cake,
     
     // Sleep & Rest
     Iconsax.moon,
@@ -61,7 +61,7 @@ class IconPicker extends StatelessWidget {
     Iconsax.calendar,
     Iconsax.clock,
     Iconsax.timer,
-    Iconsax.focus,
+    Iconsax.lamp_charge,
     Iconsax.lamp_1,
     
     // Creative
@@ -96,8 +96,8 @@ class IconPicker extends StatelessWidget {
     // Achievement & Goals
     Iconsax.cup,
     Iconsax.award,
-    Iconsax.diamond_1,
-    Iconsax.rocket_1,
+    Iconsax.diamonds,
+    Iconsax.send_2,
     Iconsax.flag,
     
     // Miscellaneous

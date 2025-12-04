@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/suggestions.dart';
 import '../../../data/models/bad_habit_model.dart';
-import '../../common/glass_container.dart';
-import '../../common/gradient_button.dart';
+import '../common/glass_container.dart';
+import '../common/gradient_button.dart';
 import 'breathing_exercise.dart';
 
 class PanicButton extends StatelessWidget {

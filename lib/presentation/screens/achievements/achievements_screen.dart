@@ -202,14 +202,16 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   ) {
     return GestureDetector(
       onTap: () => _showStoneDetails(context, stone, isUnlocked),
-      child: SmartBlurContainer(
+      child: Container(
         padding: const EdgeInsets.all(12),
-        enableBackdropFilter: true,
-        enableShaderGloss: true,
-        enableVibrancy: true,
-        showGlow: isUnlocked,
-        glowColor: isUnlocked ? stone.glowColor : null,
-        motionFactor: _scrollProgress,
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
