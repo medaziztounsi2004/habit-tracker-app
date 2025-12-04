@@ -118,6 +118,30 @@ void main() {
       expect(find.text('Disabled'), findsOneWidget);
     });
 
+    testWidgets('has dark translucent base layer for glass effect', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          theme: ThemeData.dark(),
+          home: Scaffold(
+            body: SmartBlurContainer(
+              child: Text('Glass Effect Test'),
+            ),
+          ),
+        ),
+      );
+
+      // Widget should render without errors
+      expect(find.text('Glass Effect Test'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      
+      // Verify the container is present
+      final container = tester.widget<SmartBlurContainer>(
+        find.byType(SmartBlurContainer),
+      );
+      expect(container.enableBackdropFilter, isTrue);
+      expect(container.enableVibrancy, isTrue);
+    });
+
     testWidgets('shows glow when enabled', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(

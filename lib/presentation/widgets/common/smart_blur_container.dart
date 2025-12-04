@@ -145,6 +145,17 @@ class _SmartBlurContainerState extends State<SmartBlurContainer>
                 borderRadius: BorderRadius.circular(widget.borderRadius),
                 child: Stack(
                   children: [
+                    // Layer 0: Dark translucent base for glass effect
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black.withOpacity(0.4)
+                              : Colors.white.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                    
                     // Layer 1: Backdrop filter (blur)
                     if (widget.enableBackdropFilter)
                       Positioned.fill(
