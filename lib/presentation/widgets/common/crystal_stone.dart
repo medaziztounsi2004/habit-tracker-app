@@ -46,6 +46,10 @@ class _CrystalStoneState extends State<CrystalStone>
   Animation<double>? _floatAnimation;
   Animation<double>? _glowAnimation;
 
+  /// Returns true when animations should be enabled.
+  /// Animations are only enabled when the widget's animate property is true
+  /// AND the stone is not locked. This prevents creating animation controllers
+  /// for grid displays (default) while allowing featured stones to animate.
   bool get _shouldAnimate => widget.animate && !widget.isLocked;
 
   @override
@@ -94,11 +98,11 @@ class _CrystalStoneState extends State<CrystalStone>
     final wasAnimating = oldWidget.animate && !oldWidget.isLocked;
     final shouldNowAnimate = _shouldAnimate;
     
+    // Only dispose/recreate when animation state actually changes
     if (wasAnimating && !shouldNowAnimate) {
-      // Stop and dispose animations
       _disposeAnimations();
-    } else if (!wasAnimating && shouldNowAnimate) {
-      // Start animations
+    } else if (!wasAnimating && shouldNowAnimate && _floatController == null) {
+      // Only setup if controllers don't already exist
       _setupAnimationsIfNeeded();
     }
   }
@@ -118,7 +122,7 @@ class _CrystalStoneState extends State<CrystalStone>
       child: SizedBox(
         width: widget.size * 1.4,
         height: widget.size * 1.4,
-        child: _shouldAnimate && _floatAnimation != null && _glowAnimation != null
+        child: _shouldAnimate
             ? AnimatedBuilder(
                 animation: Listenable.merge([_floatAnimation!, _glowAnimation!]),
                 builder: (context, child) {
