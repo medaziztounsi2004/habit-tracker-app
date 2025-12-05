@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // Compact Quick Action Bar for navigation - positioned above FAB/nav bar
             Positioned(
-              bottom: 140,
+              bottom: 90,
               left: 20,
               child: FadeInUp(
                 duration: const Duration(milliseconds: 400),
