@@ -13,7 +13,6 @@ import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/common/premium_stats_chart.dart';
 import '../../widgets/common/stone_showcase.dart';
 import '../settings/settings_screen.dart';
-import '../achievements/achievements_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

@@ -291,7 +291,6 @@ class _StoneShowcaseState extends State<StoneShowcase>
                         size: 80,
                         isLocked: false,
                         showGlow: true,
-                        animate: false,
                       ),
                     ],
                   ),
@@ -532,7 +531,6 @@ class CompactStoneShowcase extends StatelessWidget {
                   size: 36,
                   isLocked: false,
                   showGlow: false,
-                  animate: false,
                 ),
               )),
               if (hasMore)

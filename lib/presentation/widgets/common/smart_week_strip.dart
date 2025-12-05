@@ -108,7 +108,6 @@ class _SmartWeekStripState extends State<SmartWeekStrip>
   }
 
   bool get _isCurrentWeek {
-    final now = DateTime.now();
     return widget.weekDates.any((date) => Helpers.isToday(date));
   }
 

@@ -469,7 +469,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
           ),
           child: Center(
             child: Text(
-              widget.user?.name?.isNotEmpty == true
+              widget.user?.name.isNotEmpty == true
                   ? widget.user!.name[0].toUpperCase()
                   : 'U',
               style: const TextStyle(

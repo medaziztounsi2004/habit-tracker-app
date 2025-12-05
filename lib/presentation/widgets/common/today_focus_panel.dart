@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/habit_model.dart';
-import '../../../core/utils/helpers.dart';
 
 /// Data for a habit in the focus panel
 class FocusHabitData {
