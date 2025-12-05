@@ -47,6 +47,100 @@ class BadHabitSuggestion {
 }
 
 class HabitSuggestions {
+  /// Maps user goals to relevant good habit categories
+  static const Map<String, List<String>> goalToGoodCategories = {
+    'Be Healthier': ['Health', 'Sleep', 'Fitness'],
+    'Get Fit': ['Fitness', 'Health'],
+    'Be More Productive': ['Productivity', 'Learning'],
+    'Improve Mental Health': ['Mindfulness', 'Social', 'Sleep'],
+    'Save Money': ['Finance'],
+    'Learn New Skills': ['Learning', 'Creative'],
+    'Build Better Habits': ['Productivity', 'Health', 'Mindfulness'],
+    'Quit Bad Habits': [], // Show all bad habits
+  };
+
+  /// Maps user goals to relevant bad habit categories
+  static const Map<String, List<String>> goalToBadCategories = {
+    'Be Healthier': ['Health'],
+    'Get Fit': ['Health'],
+    'Be More Productive': ['Digital', 'Productivity'],
+    'Improve Mental Health': ['Mental Health', 'Digital', 'Social'],
+    'Save Money': ['Finance'],
+    'Learn New Skills': [],
+    'Build Better Habits': [],
+    'Quit Bad Habits': [], // Show all
+  };
+
+  /// Get recommended good habit categories based on selected goals
+  static Set<String> getRecommendedGoodCategories(List<String> selectedGoals) {
+    final categories = <String>{};
+    for (final goal in selectedGoals) {
+      final goalCategories = goalToGoodCategories[goal];
+      if (goalCategories != null) {
+        categories.addAll(goalCategories);
+      }
+    }
+    return categories;
+  }
+
+  /// Get recommended bad habit categories based on selected goals
+  static Set<String> getRecommendedBadCategories(List<String> selectedGoals) {
+    final categories = <String>{};
+    for (final goal in selectedGoals) {
+      final goalCategories = goalToBadCategories[goal];
+      if (goalCategories != null) {
+        categories.addAll(goalCategories);
+      }
+    }
+    return categories;
+  }
+
+  /// Check if a habit is recommended based on user's selected goals
+  static bool isGoodHabitRecommended(String habitCategory, List<String> selectedGoals) {
+    final recommendedCategories = getRecommendedGoodCategories(selectedGoals);
+    return recommendedCategories.contains(habitCategory);
+  }
+
+  /// Check if a bad habit is recommended based on user's selected goals
+  static bool isBadHabitRecommended(String habitCategory, List<String> selectedGoals) {
+    final recommendedCategories = getRecommendedBadCategories(selectedGoals);
+    return recommendedCategories.contains(habitCategory);
+  }
+
+  /// Sort habits by recommendation (recommended first)
+  static List<HabitSuggestion> sortGoodHabitsByRecommendation(
+    List<HabitSuggestion> habits, 
+    List<String> selectedGoals,
+  ) {
+    final recommendedCategories = getRecommendedGoodCategories(selectedGoals);
+    final sorted = List<HabitSuggestion>.from(habits);
+    sorted.sort((a, b) {
+      final aRecommended = recommendedCategories.contains(a.category);
+      final bRecommended = recommendedCategories.contains(b.category);
+      if (aRecommended && !bRecommended) return -1;
+      if (!aRecommended && bRecommended) return 1;
+      return 0;
+    });
+    return sorted;
+  }
+
+  /// Sort bad habits by recommendation (recommended first)
+  static List<BadHabitSuggestion> sortBadHabitsByRecommendation(
+    List<BadHabitSuggestion> habits, 
+    List<String> selectedGoals,
+  ) {
+    final recommendedCategories = getRecommendedBadCategories(selectedGoals);
+    final sorted = List<BadHabitSuggestion>.from(habits);
+    sorted.sort((a, b) {
+      final aRecommended = recommendedCategories.contains(a.category);
+      final bRecommended = recommendedCategories.contains(b.category);
+      if (aRecommended && !bRecommended) return -1;
+      if (!aRecommended && bRecommended) return 1;
+      return 0;
+    });
+    return sorted;
+  }
+
   // 50+ Good Habits organized by category
   static const List<HabitSuggestion> goodHabits = [
     // Health (10)
