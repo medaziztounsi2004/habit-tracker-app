@@ -74,16 +74,16 @@ class _LoginScreenState extends State<LoginScreen> {
     if (password.length >= 12) strength += _bonusStrengthForLongLength;
     
     // Contains lowercase
-    if (password.contains(_lowercasePattern)) strength += _strengthForLowercase;
+    if (_lowercasePattern.hasMatch(password)) strength += _strengthForLowercase;
     
     // Contains uppercase
-    if (password.contains(_uppercasePattern)) strength += _strengthForUppercase;
+    if (_uppercasePattern.hasMatch(password)) strength += _strengthForUppercase;
     
     // Contains number
-    if (password.contains(_numberPattern)) strength += _strengthForNumber;
+    if (_numberPattern.hasMatch(password)) strength += _strengthForNumber;
     
     // Contains special character
-    if (password.contains(_specialCharPattern)) strength += _strengthForSpecialChar;
+    if (_specialCharPattern.hasMatch(password)) strength += _strengthForSpecialChar;
     
     return strength.clamp(0.0, 1.0);
   }

@@ -250,9 +250,9 @@ class AuthProvider extends ChangeNotifier {
       // Scaffold: In a real app, this would use google_sign_in package
       // For now, we simulate a successful sign in with a unique email
       const uuid = Uuid();
-      final uniqueId = uuid.v4().substring(0, 8);
-      _userId = 'google_${uuid.v4()}';
-      _userEmail = 'user_$uniqueId@gmail.com';
+      final generatedUuid = uuid.v4();
+      _userId = 'google_$generatedUuid';
+      _userEmail = 'user_${generatedUuid.substring(0, 8)}@gmail.com';
 
       // Persist auth state
       final prefs = await SharedPreferences.getInstance();
@@ -284,9 +284,9 @@ class AuthProvider extends ChangeNotifier {
       // Scaffold: In a real app, this would use sign_in_with_apple package
       // For now, we simulate a successful sign in with a unique email
       const uuid = Uuid();
-      final uniqueId = uuid.v4().substring(0, 8);
-      _userId = 'apple_${uuid.v4()}';
-      _userEmail = 'user_$uniqueId@privaterelay.appleid.com';
+      final generatedUuid = uuid.v4();
+      _userId = 'apple_$generatedUuid';
+      _userEmail = 'user_${generatedUuid.substring(0, 8)}@privaterelay.appleid.com';
 
       // Persist auth state
       final prefs = await SharedPreferences.getInstance();
