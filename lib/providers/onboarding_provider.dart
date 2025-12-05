@@ -98,6 +98,20 @@ class OnboardingProvider extends ChangeNotifier {
     await prefs.setString('schedule_preference', _schedulePreference);
     await prefs.setString('reminder_time', _reminderTime);
     await prefs.setString('join_date', DateTime.now().toIso8601String());
+    
+    // Save preferred days as comma-separated string
+    await prefs.setString('preferred_days', _preferredDays.join(','));
+    
+    // Set quiet hours based on schedule preference
+    if (_schedulePreference == 'morning') {
+      // Morning person: Quiet hours 22:00 - 07:00
+      await prefs.setString('quiet_start', '22:00');
+      await prefs.setString('quiet_end', '07:00');
+    } else {
+      // Night person: Quiet hours 00:00 - 09:00
+      await prefs.setString('quiet_start', '00:00');
+      await prefs.setString('quiet_end', '09:00');
+    }
   }
 
   // Load onboarding data (for editing profile later)

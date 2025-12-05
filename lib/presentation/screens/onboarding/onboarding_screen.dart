@@ -70,6 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         habitList: HabitSuggestions.goodHabits.map((h) => h.toMap()).toList(),
         isQuit: false,
         colorIndex: 0,
+        provider: onboardingProvider,
       );
     }
     
@@ -80,6 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         habitList: HabitSuggestions.badHabits.map((h) => h.toMap()).toList(),
         isQuit: true,
         colorIndex: 1,
+        provider: onboardingProvider,
       );
     }
     
@@ -95,11 +97,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return index >= 0 ? index : 0;
   }
 
+  /// Get reminder time based on habit category and schedule preference
+  String _getReminderTime(String category, String schedulePreference) {
+    final isMorning = schedulePreference == 'morning';
+    
+    // Morning habits (Fitness, Health, Productivity)
+    if (['Fitness', 'Health', 'Productivity'].contains(category)) {
+      return isMorning ? '07:00' : '09:00';
+    }
+    // Evening habits (Sleep, Mindfulness)
+    if (['Sleep', 'Mindfulness'].contains(category)) {
+      return isMorning ? '20:00' : '22:00';
+    }
+    // Default times
+    return isMorning ? '08:00' : '21:00';
+  }
+
   Future<void> _addHabitFromSelection({
     required String habitName,
     required List<Map<String, dynamic>> habitList,
     required bool isQuit,
     required int colorIndex,
+    required OnboardingProvider provider,
   }) async {
     final habitData = habitList.firstWhere(
       (h) => h['name'] == habitName,
@@ -109,17 +128,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Skip if habit not found
     if (habitData.isEmpty) return;
     
+    final category = habitData['category'] as String;
+    final reminderTime = _getReminderTime(category, provider.schedulePreference);
+    // Use preferred days from provider, defaulting to all days if somehow empty
+    final preferredDays = provider.preferredDays.isEmpty 
+        ? [1, 2, 3, 4, 5, 6, 7]
+        : provider.preferredDays;
+    
     final habitProvider = context.read<HabitProvider>();
     await habitProvider.addHabit(
       name: habitData['name'] as String,
       iconIndex: _getIconIndex(habitData['icon'] as IconData),
       colorIndex: colorIndex,
-      category: habitData['category'] as String,
-      scheduledDays: [0, 1, 2, 3, 4, 5, 6], // Every day
-      targetDaysPerWeek: 7,
+      category: category,
+      scheduledDays: preferredDays,
+      targetDaysPerWeek: preferredDays.length,
+      reminderTime: reminderTime,
       isQuitHabit: isQuit,
       quitStartDate: isQuit ? DateTime.now() : null,
-      moneySavedPerDay: null, // We don't set default money values anymore
+      moneySavedPerDay: null,
     );
   }
 
@@ -468,6 +495,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildGoodHabitsPage() {
     return Consumer<OnboardingProvider>(
       builder: (context, provider, child) {
+        // Sort habits by recommendation based on user's selected goals
+        final sortedHabits = HabitSuggestions.sortGoodHabitsByRecommendation(
+          HabitSuggestions.goodHabits,
+          provider.selectedGoals,
+        );
+        final recommendedCategories = HabitSuggestions.getRecommendedGoodCategories(
+          provider.selectedGoals,
+        );
+        
         return Column(
           children: [
             const Padding(
@@ -500,12 +536,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   crossAxisSpacing: 12,
                   childAspectRatio: 1.4,
                 ),
-                itemCount: HabitSuggestions.goodHabits.length,
+                itemCount: sortedHabits.length,
                 itemBuilder: (context, index) {
-                  final habit = HabitSuggestions.goodHabits[index];
-                  final habitMap = habit.toMap();
+                  final habit = sortedHabits[index];
                   final isSelected =
                       provider.selectedGoodHabits.contains(habit.name);
+                  final isRecommended = recommendedCategories.contains(habit.category);
+                  
                   return GestureDetector(
                     onTap: () => provider.toggleGoodHabit(habit.name),
                     child: AnimatedContainer(
@@ -519,38 +556,63 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         border: Border.all(
                           color: isSelected
                               ? AppColors.accentGreen
-                              : Colors.transparent,
+                              : isRecommended
+                                  ? AppColors.warning.withAlpha(128)
+                                  : Colors.transparent,
                           width: 2,
                         ),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Stack(
                         children: [
-                          Icon(
-                            habit.icon,
-                            size: 28,
-                            color: Colors.white,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                habit.icon,
+                                size: 28,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                habit.name,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (isSelected)
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 2),
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.accentGreen,
+                                    size: 14,
+                                  ),
+                                ),
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            habit.name,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (isSelected)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Icon(
-                                Icons.check_circle,
-                                color: AppColors.accentGreen,
-                                size: 14,
+                          if (isRecommended)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.warning.withAlpha(204),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  '✨',
+                                  style: TextStyle(fontSize: 10),
+                                ),
                               ),
                             ),
                         ],
@@ -577,6 +639,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildBadHabitsPage() {
     return Consumer<OnboardingProvider>(
       builder: (context, provider, child) {
+        // Sort habits by recommendation based on user's selected goals
+        final sortedHabits = HabitSuggestions.sortBadHabitsByRecommendation(
+          HabitSuggestions.badHabits,
+          provider.selectedGoals,
+        );
+        final recommendedCategories = HabitSuggestions.getRecommendedBadCategories(
+          provider.selectedGoals,
+        );
+        
         return Column(
           children: [
             const Padding(
@@ -609,11 +680,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   crossAxisSpacing: 12,
                   childAspectRatio: 1.4,
                 ),
-                itemCount: HabitSuggestions.badHabits.length,
+                itemCount: sortedHabits.length,
                 itemBuilder: (context, index) {
-                  final habit = HabitSuggestions.badHabits[index];
+                  final habit = sortedHabits[index];
                   final isSelected =
                       provider.selectedBadHabits.contains(habit.name);
+                  final isRecommended = recommendedCategories.contains(habit.category);
+                  
                   return GestureDetector(
                     onTap: () => provider.toggleBadHabit(habit.name),
                     child: AnimatedContainer(
@@ -625,39 +698,65 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ? AppColors.error.withAlpha(102)
                             : Colors.white.withAlpha(25),
                         border: Border.all(
-                          color:
-                              isSelected ? AppColors.error : Colors.transparent,
+                          color: isSelected
+                              ? AppColors.error
+                              : isRecommended
+                                  ? AppColors.warning.withAlpha(128)
+                                  : Colors.transparent,
                           width: 2,
                         ),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Stack(
                         children: [
-                          Icon(
-                            habit.icon,
-                            size: 28,
-                            color: Colors.white,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                habit.icon,
+                                size: 28,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                habit.name,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (isSelected)
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 2),
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.error,
+                                    size: 14,
+                                  ),
+                                ),
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            habit.name,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (isSelected)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Icon(
-                                Icons.check_circle,
-                                color: AppColors.error,
-                                size: 14,
+                          if (isRecommended)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.warning.withAlpha(204),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  '✨',
+                                  style: TextStyle(fontSize: 10),
+                                ),
                               ),
                             ),
                         ],
