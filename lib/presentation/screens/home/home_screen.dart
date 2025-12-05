@@ -248,14 +248,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       date: _selectedDate,
                       onEditHabit: (habit) => _navigateToEditHabit(context, habit),
                     ),
-                    const SizedBox(height: 160), // Space for FAB, nav bar, and quick action bar
+                    const SizedBox(height: 200), // Space for FAB, nav bar, and quick action bar
                   ],
                 ),
               ),
             ),
             // Compact Quick Action Bar for navigation - positioned above FAB/nav bar
             Positioned(
-              bottom: 100,
+              bottom: 140,
               left: 20,
               child: FadeInUp(
                 duration: const Duration(milliseconds: 400),
