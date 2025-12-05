@@ -728,7 +728,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(context); // Close dialog
               await provider.clearAllData();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -737,8 +737,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     backgroundColor: AppColors.success,
                   ),
                 );
-                // Navigate back to start fresh
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                // Pop back to profile screen - the app will handle state changes
+                Navigator.of(context).pop();
               }
             },
             style: TextButton.styleFrom(foregroundColor: const Color(0xFFEF4444)),

@@ -321,9 +321,13 @@ class HabitProvider extends ChangeNotifier {
 
   // Clear all data (habits and user data)
   Future<void> clearAllData() async {
-    await _repository.clearAllData();
-    _habits = [];
-    _user = await _repository.createDefaultUser();
+    try {
+      await _repository.clearAllData();
+      _habits = [];
+      _user = await _repository.createDefaultUser();
+    } catch (e) {
+      _error = 'Failed to clear data: $e';
+    }
     notifyListeners();
   }
 }
