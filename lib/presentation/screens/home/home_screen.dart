@@ -274,6 +274,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            // Compact Quick Action Bar for navigation
+            Positioned(
+              bottom: 16,
+              left: 20,
+              child: FadeInUp(
+                duration: const Duration(milliseconds: 400),
+                delay: const Duration(milliseconds: 300),
+                child: _buildQuickActionBar(context),
+              ),
+            ),
             // Confetti
             Align(
               alignment: Alignment.topCenter,
@@ -646,6 +656,104 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  /// Build compact floating quick-action bar for navigation
+  Widget _buildQuickActionBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.darkCard.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildQuickActionItem(
+            icon: Iconsax.task_square5,
+            label: 'Focus',
+            color: AppColors.primaryPurple,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              // Scroll to Today Focus panel (it's already on home)
+              Helpers.showSnackBar(context, 'Today Focus is above! 📋');
+            },
+          ),
+          const SizedBox(width: 4),
+          _buildQuickActionItem(
+            icon: Iconsax.cup5,
+            label: 'Missions',
+            color: AppColors.accentCyan,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              // Weekly mission is in the hero header
+              Helpers.showSnackBar(context, 'Weekly Mission is in the hero! 🎯');
+            },
+          ),
+          const SizedBox(width: 4),
+          _buildQuickActionItem(
+            icon: Iconsax.medal_star5,
+            label: 'Awards',
+            color: AppColors.goldAccent,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              // Navigate to achievements tab (index 3)
+              _navigateToAchievements(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _navigateToAchievements(BuildContext context) {
+    // Find the MainNavigationScreen and switch to achievements tab
+    // For now, show a message since direct navigation requires state management
+    Helpers.showSnackBar(context, 'Tap Awards in the bottom navigation! 🏆');
   }
 
   void _navigateToEditHabit(BuildContext context, HabitModel habit) {
