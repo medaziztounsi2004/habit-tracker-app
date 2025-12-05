@@ -125,7 +125,12 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
   // Calculate XP to next level
   int get _xpToNextLevel {
     final totalXP = widget.user?.totalXP ?? 0;
-    return AppConstants.xpPerLevel - (totalXP % AppConstants.xpPerLevel);
+    final remainder = totalXP % AppConstants.xpPerLevel;
+    // Handle the case where XP is exactly at a level boundary
+    if (remainder == 0 && totalXP > 0) {
+      return 0; // Just leveled up
+    }
+    return AppConstants.xpPerLevel - remainder;
   }
 
   @override

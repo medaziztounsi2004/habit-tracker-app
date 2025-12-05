@@ -470,7 +470,8 @@ class _HomeScreenState extends State<HomeScreen> {
       bool isUrgent = false;
       String? dueTime;
       
-      if (habit.reminderTime != null && !isCompleted) {
+      // Habits are only urgent for today's view
+      if (Helpers.isToday(_selectedDate) && habit.reminderTime != null && !isCompleted) {
         try {
           final parts = habit.reminderTime!.split(':');
           final reminderHour = int.parse(parts[0]);

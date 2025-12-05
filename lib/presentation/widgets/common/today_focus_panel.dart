@@ -55,15 +55,60 @@ class TodayFocusPanel extends StatelessWidget {
     this.onHabitToggle,
   });
 
-  int get _remainingCount => focusHabits.where((h) => !h.isCompleted).length;
-  int get _urgentCount => focusHabits.where((h) => h.isUrgent && !h.isCompleted).length;
-  bool get _allCompleted => focusHabits.isNotEmpty && _remainingCount == 0;
-
   @override
   Widget build(BuildContext context) {
     if (focusHabits.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    // Cache computed values to avoid repeated filtering during rebuilds
+    final remainingCount = focusHabits.where((h) => !h.isCompleted).length;
+    final urgentCount = focusHabits.where((h) => h.isUrgent && !h.isCompleted).length;
+    final allCompleted = focusHabits.isNotEmpty && remainingCount == 0;
+
+    return _TodayFocusPanelContent(
+      focusHabits: focusHabits,
+      xpReward: xpReward,
+      remainingCount: remainingCount,
+      urgentCount: urgentCount,
+      allCompleted: allCompleted,
+      onCompleteAll: onCompleteAll,
+      onSnooze: onSnooze,
+      onReschedule: onReschedule,
+      onHabitTap: onHabitTap,
+      onHabitToggle: onHabitToggle,
+    );
+  }
+}
+
+/// Internal stateless widget to render the focus panel content
+class _TodayFocusPanelContent extends StatelessWidget {
+  final List<FocusHabitData> focusHabits;
+  final int xpReward;
+  final int remainingCount;
+  final int urgentCount;
+  final bool allCompleted;
+  final VoidCallback? onCompleteAll;
+  final VoidCallback? onSnooze;
+  final VoidCallback? onReschedule;
+  final ValueChanged<HabitModel>? onHabitTap;
+  final ValueChanged<HabitModel>? onHabitToggle;
+
+  const _TodayFocusPanelContent({
+    required this.focusHabits,
+    required this.xpReward,
+    required this.remainingCount,
+    required this.urgentCount,
+    required this.allCompleted,
+    this.onCompleteAll,
+    this.onSnooze,
+    this.onReschedule,
+    this.onHabitTap,
+    this.onHabitToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -79,14 +124,14 @@ class TodayFocusPanel extends StatelessWidget {
           ],
         ),
         border: Border.all(
-          color: _urgentCount > 0
+          color: urgentCount > 0
               ? AppColors.warning.withOpacity(0.3)
               : Colors.white.withOpacity(0.1),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: _urgentCount > 0
+            color: urgentCount > 0
                 ? AppColors.warning.withOpacity(0.1)
                 : Colors.black.withOpacity(0.2),
             blurRadius: 16,
@@ -121,13 +166,13 @@ class TodayFocusPanel extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            gradient: _urgentCount > 0
+            gradient: urgentCount > 0
                 ? AppColors.warningGradient
                 : AppColors.primaryGradient,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: _urgentCount > 0
+                color: urgentCount > 0
                     ? AppColors.warning.withOpacity(0.3)
                     : AppColors.primaryPurple.withOpacity(0.3),
                 blurRadius: 8,
@@ -136,7 +181,7 @@ class TodayFocusPanel extends StatelessWidget {
             ],
           ),
           child: Icon(
-            _urgentCount > 0 ? Iconsax.timer_1 : Iconsax.task_square5,
+            urgentCount > 0 ? Iconsax.timer_1 : Iconsax.task_square5,
             size: 20,
             color: Colors.white,
           ),
@@ -156,14 +201,14 @@ class TodayFocusPanel extends StatelessWidget {
                 ),
               ),
               Text(
-                _allCompleted
+                allCompleted
                     ? 'All done! 🎉'
-                    : _urgentCount > 0
-                        ? '$_urgentCount urgent, $_remainingCount remaining'
-                        : '$_remainingCount habits remaining',
+                    : urgentCount > 0
+                        ? '$urgentCount urgent, $remainingCount remaining'
+                        : '$remainingCount habits remaining',
                 style: TextStyle(
                   fontSize: 12,
-                  color: _urgentCount > 0
+                  color: urgentCount > 0
                       ? AppColors.warning
                       : Colors.white.withOpacity(0.6),
                 ),
@@ -175,9 +220,9 @@ class TodayFocusPanel extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: _allCompleted
+            color: allCompleted
                 ? AppColors.accentGreen.withOpacity(0.2)
-                : _urgentCount > 0
+                : urgentCount > 0
                     ? AppColors.warning.withOpacity(0.2)
                     : AppColors.accentCyan.withOpacity(0.2),
             borderRadius: BorderRadius.circular(10),
@@ -186,31 +231,31 @@ class TodayFocusPanel extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                _allCompleted
+                allCompleted
                     ? Icons.check_circle
-                    : _urgentCount > 0
+                    : urgentCount > 0
                         ? Icons.warning_rounded
                         : Icons.pending,
                 size: 14,
-                color: _allCompleted
+                color: allCompleted
                     ? AppColors.accentGreen
-                    : _urgentCount > 0
+                    : urgentCount > 0
                         ? AppColors.warning
                         : AppColors.accentCyan,
               ),
               const SizedBox(width: 4),
               Text(
-                _allCompleted
+                allCompleted
                     ? 'Done'
-                    : _urgentCount > 0
+                    : urgentCount > 0
                         ? 'Urgent'
                         : 'In Progress',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: _allCompleted
+                  color: allCompleted
                       ? AppColors.accentGreen
-                      : _urgentCount > 0
+                      : urgentCount > 0
                           ? AppColors.warning
                           : AppColors.accentCyan,
                 ),
@@ -382,7 +427,7 @@ class TodayFocusPanel extends StatelessWidget {
   }
 
   Widget _buildRewardTag() {
-    if (_allCompleted) {
+    if (allCompleted) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
@@ -448,7 +493,7 @@ class TodayFocusPanel extends StatelessWidget {
   }
 
   Widget _buildQuickActions() {
-    if (_allCompleted) {
+    if (allCompleted) {
       return const SizedBox.shrink();
     }
 

@@ -71,13 +71,15 @@ class SmartWeekStrip extends StatefulWidget {
 }
 
 class _SmartWeekStripState extends State<SmartWeekStrip>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -90,8 +92,19 @@ class _SmartWeekStripState extends State<SmartWeekStrip>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pulseController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Stop animation when app is in background to save battery
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _pulseController.stop();
+    } else if (state == AppLifecycleState.resumed) {
+      _pulseController.repeat(reverse: true);
+    }
   }
 
   bool get _isCurrentWeek {
