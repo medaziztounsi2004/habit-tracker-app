@@ -21,7 +21,6 @@ import '../../widgets/common/achievements_carousel.dart';
 import '../../widgets/common/today_focus_panel.dart';
 import '../../widgets/common/day_detail_bottom_sheet.dart';
 import '../../widgets/habit/habit_list.dart';
-import '../../widgets/animations/scale_animation.dart';
 import '../../widgets/quit/quit_habit_card.dart';
 import '../add_habit/add_habit_screen.dart';
 import '../statistics/statistics_screen.dart';
