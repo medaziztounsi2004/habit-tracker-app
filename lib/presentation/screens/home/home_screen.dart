@@ -11,10 +11,8 @@ import '../../../providers/habit_provider.dart';
 import '../../../data/models/habit_model.dart';
 import '../../../data/models/achievement_model.dart';
 import '../../widgets/common/glass_container.dart';
-import '../../widgets/common/animated_progress_ring.dart';
 import '../../widgets/common/premium_profile_header.dart';
 import '../../widgets/common/smart_week_strip.dart';
-import '../../widgets/common/level_progress.dart';
 import '../../widgets/common/motivational_quote_card.dart';
 import '../../widgets/common/galaxy_background.dart';
 import '../../widgets/common/achievements_carousel.dart';
@@ -23,7 +21,10 @@ import '../../widgets/common/day_detail_bottom_sheet.dart';
 import '../../widgets/habit/habit_list.dart';
 import '../../widgets/quit/quit_habit_card.dart';
 import '../add_habit/add_habit_screen.dart';
-import '../statistics/statistics_screen.dart';
+import '../focus/today_focus_screen.dart';
+import '../achievements/dedicated_achievements_screen.dart';
+import '../missions/weekly_mission_screen.dart';
+import '../calendar/calendar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -132,6 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           weeklyTargetDays: 5,
                           weeklyAchievedDays: weeklyAchievedDays,
                           weeklyRewardXP: 100,
+                          // Navigate to weekly mission screen
+                          onWeeklyMissionTap: () => _navigateToWeeklyMission(context),
                         ),
                       ),
                     ),
@@ -158,12 +161,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: AchievementsCarousel(
                         achievements: _buildAchievementsData(habitProvider),
                         onAchievementTap: (achievement) {
-                          // Navigate to achievements screen or show details
+                          // Navigate to dedicated achievements screen
                           HapticFeedback.lightImpact();
+                          _navigateToAchievementsPage(context);
                         },
                         onSeeAllTap: () {
-                          // Navigate to achievements screen
+                          // Navigate to dedicated achievements screen
                           HapticFeedback.lightImpact();
+                          _navigateToAchievementsPage(context);
                         },
                       ),
                     ),
@@ -193,9 +198,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     if (Helpers.isToday(_selectedDate) && todayHabits.isNotEmpty)
                       const SizedBox(height: 24),
-                    // Stats row
-                    _buildStatsRow(context, habitProvider, progress),
-                    const SizedBox(height: 24),
                     // Motivational Quote
                     FadeInUp(
                       duration: const Duration(milliseconds: 500),
@@ -526,16 +528,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Navigate to insights/statistics screen
-  void _navigateToInsights(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const StatisticsScreen(),
-      ),
-    );
-  }
-
   /// Show day details bottom sheet
   void _showDayDetails(BuildContext context, HabitProvider habitProvider) {
     final habits = habitProvider.getHabitsForDate(_selectedDate)
@@ -583,81 +575,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, HabitProvider provider, double progress) {
-    return FadeInUp(
-      duration: const Duration(milliseconds: 500),
-      delay: const Duration(milliseconds: 200),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          children: [
-            // Progress ring
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  _showProgressDetails(context, provider, progress);
-                },
-                child: GlassContainer(
-                  padding: const EdgeInsets.all(16),
-                  useBackdropFilter: true,
-                  child: Row(
-                    children: [
-                      AnimatedProgressRing(
-                        progress: progress,
-                        size: 60,
-                        strokeWidth: 6,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Progress',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white.withOpacity(0.6),
-                              ),
-                            ),
-                            Text(
-                              '${(progress * 100).toInt()}%',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Icon(
-                              Icons.touch_app,
-                              size: 12,
-                              color: Colors.white.withOpacity(0.4),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // XP and Level
-            Expanded(
-              child: LevelProgressWidget(
-                level: provider.level,
-                totalXP: provider.totalXP,
-                levelProgress: provider.levelProgress,
-                onTap: () => _showLevelDetails(context, provider),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   /// Build compact floating quick-action bar for navigation
   Widget _buildQuickActionBar(BuildContext context) {
     return Container(
@@ -686,19 +603,19 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.primaryPurple,
             onTap: () {
               HapticFeedback.lightImpact();
-              // Scroll to Today Focus panel (it's already on home)
-              Helpers.showSnackBar(context, 'Today Focus is above! 📋');
+              // Navigate to dedicated Today's Focus page
+              _navigateToTodayFocus(context);
             },
           ),
           const SizedBox(width: 4),
           _buildQuickActionItem(
-            icon: Iconsax.cup5,
-            label: 'Missions',
+            icon: Iconsax.calendar_1,
+            label: 'Calendar',
             color: AppColors.accentCyan,
             onTap: () {
               HapticFeedback.lightImpact();
-              // Weekly mission is in the hero header
-              Helpers.showSnackBar(context, 'Weekly Mission is in the hero! 🎯');
+              // Navigate to Calendar screen
+              _navigateToCalendar(context);
             },
           ),
           const SizedBox(width: 4),
@@ -708,8 +625,8 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.goldAccent,
             onTap: () {
               HapticFeedback.lightImpact();
-              // Navigate to achievements tab (index 3)
-              _navigateToAchievements(context);
+              // Navigate to dedicated achievements page
+              _navigateToAchievementsPage(context);
             },
           ),
         ],
@@ -750,10 +667,58 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _navigateToAchievements(BuildContext context) {
-    // Find the MainNavigationScreen and switch to achievements tab
-    // For now, show a message since direct navigation requires state management
-    Helpers.showSnackBar(context, 'Tap Awards in the bottom navigation! 🏆');
+  void _navigateToAchievementsPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DedicatedAchievementsScreen(),
+      ),
+    );
+  }
+
+  void _navigateToTodayFocus(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const TodayFocusScreen(),
+      ),
+    );
+  }
+
+  void _navigateToWeeklyMission(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const WeeklyMissionScreen(),
+      ),
+    );
+  }
+
+  void _navigateToCalendar(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: const Text(
+              'Calendar',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          body: const CalendarScreen(),
+        ),
+      ),
+    );
   }
 
   void _navigateToEditHabit(BuildContext context, HabitModel habit) {
@@ -867,276 +832,6 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildStatRow(context, 'Longest Streak', '${provider.longestStreak} days', Icons.military_tech),
             _buildStatRow(context, 'Total XP', '${provider.totalXP}', Icons.star),
             _buildStatRow(context, 'Achievements', '${provider.user?.unlockedAchievements.length ?? 0}', Icons.stars),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showLevelDetails(BuildContext context, HabitProvider provider) {
-    HapticFeedback.mediumImpact();
-    
-    final xpForNextLevel = AppConstants.xpPerLevel - (provider.totalXP % AppConstants.xpPerLevel);
-    final nextLevel = provider.level + 1;
-    
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Drag handle
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Level icon
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: AppColors.cyanPurpleGradient,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryPurple.withAlpha(102),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Colors.white, Colors.white70],
-                  ).createShader(bounds),
-                  child: const Icon(
-                    Icons.star,
-                    color: Colors.white,
-                    size: 48,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Level ${provider.level}',
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${provider.totalXP} Total XP',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.6),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Progress to next level
-            GlassContainer(
-              padding: const EdgeInsets.all(20),
-              useBackdropFilter: true,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Progress to Level $nextLevel',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '${(provider.levelProgress * 100).toInt()}%',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: provider.levelProgress,
-                      backgroundColor: Theme.of(context).colorScheme.onSurface.withAlpha(25),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.accentCyan,
-                      ),
-                      minHeight: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '$xpForNextLevel XP until next level',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Iconsax.lamp_1,
-                  size: 16,
-                  color: Colors.white.withOpacity(0.6),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Complete habits to earn XP and level up!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.6),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showProgressDetails(BuildContext context, HabitProvider provider, double progress) {
-    HapticFeedback.mediumImpact();
-    
-    final todayHabits = provider.getHabitsForDate(_selectedDate);
-    final completedCount = provider.getTodayCompletedCount();
-    
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Drag handle
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(51),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "Today's Progress",
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Progress ring
-            AnimatedProgressRing(
-              progress: progress,
-              size: 120,
-              strokeWidth: 12,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              '${(progress * 100).toInt()}% Complete',
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '$completedCount of ${todayHabits.length} habits completed',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (progress == 1.0)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: AppColors.greenCyanGradient,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.celebration, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Row(
-                      children: [
-                        Icon(
-                          Iconsax.emoji_happy,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Perfect day!',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            else
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Iconsax.flash_1,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Keep going!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                    ),
-                  ),
-                ],
-              ),
             const SizedBox(height: 24),
           ],
         ),
