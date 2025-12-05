@@ -5,10 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/avatars.dart';
-import '../../../data/models/stone_model.dart';
 import '../../../providers/habit_provider.dart';
 import '../../widgets/common/galaxy_background.dart';
-import '../../widgets/common/crystal_stone.dart';
 import '../../widgets/common/premium_stats_chart.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -71,8 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Consumer<HabitProvider>(
         builder: (context, habitProvider, child) {
           final user = habitProvider.user;
-          final unlockedStones = user?.unlockedStones ?? [];
-          final allStones = StoneModel.allStones;
 
           return SingleChildScrollView(
           controller: _scrollController,
@@ -229,39 +225,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        
-                        // Row of collected 3D crystal stones
-                        if (allStones.isNotEmpty)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Collected Stones',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white.withOpacity(0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: allStones.take(8).map((stone) {
-                                    final isUnlocked = unlockedStones.contains(stone.id);
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 12),
-                                      child: SmallCrystalStone(
-                                        stoneType: stone.id,
-                                        isLocked: !isUnlocked,
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
                       ],
                     ),
                   ),
@@ -283,8 +246,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           'Streak',
                           '${habitProvider.currentMaxStreak}',
                           'days',
-                          Icons.local_fire_department,
-                          AppColors.pinkOrangeGradient,
+                          Icons.trending_up,
+                          AppColors.cyanPurpleGradient,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -295,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '${habitProvider.totalCompletions}',
                           'total',
                           Icons.check_circle,
-                          AppColors.greenCyanGradient,
+                          AppColors.primaryGradient,
                         ),
                       ),
                     ],

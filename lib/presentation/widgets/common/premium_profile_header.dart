@@ -78,15 +78,15 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
     super.dispose();
   }
 
-  // Feature 1: Mood ring color based on completion
-  Color get _moodRingColor {
-    if (widget.totalToday == 0) return Colors.grey;
+  // Feature 1: Ring accent color based on completion - using brand/neutral colors
+  Color get _ringAccentColor {
+    if (widget.totalToday == 0) return AppColors.primaryPurple;
     final progress = widget.completedToday / widget.totalToday;
-    if (progress >= 1.0) return const Color(0xFF00E676); // Green - Perfect!
-    if (progress >= 0.7) return const Color(0xFF69F0AE); // Light green
-    if (progress >= 0.5) return const Color(0xFFFFD54F); // Yellow
-    if (progress >= 0.3) return const Color(0xFFFFB74D); // Orange
-    return const Color(0xFFFF5252); // Red - Need to work!
+    if (progress >= 1.0) return AppColors.accentCyan; // Perfect - cyan accent
+    if (progress >= 0.7) return AppColors.primaryPurple; // Good - purple
+    if (progress >= 0.5) return AppColors.secondaryPink; // Halfway - pink
+    if (progress >= 0.3) return AppColors.goldAccent; // Getting there - gold
+    return AppColors.primaryPurple; // Default - brand purple
   }
 
   // Feature 5: Daily motivation based on time + performance
@@ -181,10 +181,10 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: _moodRingColor.withOpacity(0.2),
+                        color: _ringAccentColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: _moodRingColor.withOpacity(0.3),
+                          color: _ringAccentColor.withOpacity(0.3),
                           width: 1,
                         ),
                       ),
@@ -193,7 +193,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: _moodRingColor,
+                          color: _ringAccentColor,
                         ),
                       ),
                     ),
@@ -518,7 +518,7 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
                       color: AppColors.primaryPurple,
                     ),
                   ),
-                  // Mood Ring (Feature 1)
+                  // Ring Accent (using brand colors instead of green)
                   Center(
                     child: Container(
                       width: 68,
@@ -526,12 +526,12 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: _moodRingColor,
+                          color: _ringAccentColor,
                           width: 3,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: _moodRingColor.withOpacity(0.4),
+                            color: _ringAccentColor.withOpacity(0.4),
                             blurRadius: 12,
                             spreadRadius: 2,
                           ),
