@@ -19,6 +19,8 @@ class PremiumProfileHeader extends StatefulWidget {
   final int weeklyTargetDays;
   final int weeklyAchievedDays;
   final int weeklyRewardXP;
+  // Navigation callback for weekly mission chip
+  final VoidCallback? onWeeklyMissionTap;
 
   const PremiumProfileHeader({
     super.key,
@@ -33,6 +35,7 @@ class PremiumProfileHeader extends StatefulWidget {
     this.weeklyTargetDays = 5,
     this.weeklyAchievedDays = 0,
     this.weeklyRewardXP = 100,
+    this.onWeeklyMissionTap,
   });
 
   @override
@@ -425,70 +428,76 @@ class _PremiumProfileHeaderState extends State<PremiumProfileHeader>
         : 0.0;
     final isComplete = widget.weeklyAchievedDays >= widget.weeklyTargetDays;
     
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        gradient: isComplete
-            ? AppColors.greenCyanGradient
-            : null,
-        color: isComplete ? null : AppColors.primaryPurple.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isComplete
-              ? Colors.transparent
-              : AppColors.primaryPurple.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          // Progress chip
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 28,
-                height: 28,
-                child: CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: 3,
-                  backgroundColor: Colors.white.withOpacity(0.2),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isComplete ? Colors.white : AppColors.accentCyan,
-                  ),
-                ),
-              ),
-              Icon(
-                isComplete ? Icons.check : Iconsax.cup5,
-                size: 14,
-                color: isComplete ? Colors.white : AppColors.accentCyan,
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        widget.onWeeklyMissionTap?.call();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: isComplete
+              ? AppColors.cyanPurpleGradient
+              : null,
+          color: isComplete ? null : AppColors.primaryPurple.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isComplete
+                ? Colors.transparent
+                : AppColors.primaryPurple.withOpacity(0.3),
+            width: 1,
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        child: Row(
+          children: [
+            // Progress chip
+            Stack(
+              alignment: Alignment.center,
               children: [
-                Text(
-                  '${widget.weeklyAchievedDays}/${widget.weeklyTargetDays} days',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: isComplete ? Colors.white : Colors.white,
+                SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    value: progress,
+                    strokeWidth: 3,
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isComplete ? Colors.white : AppColors.accentCyan,
+                    ),
                   ),
                 ),
-                Text(
-                  isComplete ? 'Mission Complete!' : '+${widget.weeklyRewardXP} XP reward',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: isComplete ? Colors.white.withOpacity(0.8) : AppColors.accentCyan,
-                  ),
+                Icon(
+                  isComplete ? Icons.check : Iconsax.cup5,
+                  size: 14,
+                  color: isComplete ? Colors.white : AppColors.accentCyan,
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${widget.weeklyAchievedDays}/${widget.weeklyTargetDays} days',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    isComplete ? 'Mission Complete!' : '+${widget.weeklyRewardXP} XP reward',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: isComplete ? Colors.white.withOpacity(0.8) : AppColors.accentCyan,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
