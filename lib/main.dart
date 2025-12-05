@@ -280,7 +280,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       },
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -288,14 +288,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 ? ShaderMask(
                     shaderCallback: (bounds) =>
                         AppColors.primaryGradient.createShader(bounds),
-                    child: Icon(activeIcon, color: Colors.white, size: 22),
+                    child: Icon(activeIcon, color: Colors.white, size: 20),
                   )
-                : Icon(icon, size: 22),
+                : Icon(icon, size: 20),
             const SizedBox(height: 2),
             Text(
               label,
               style: TextStyle(
-                fontSize: 9,
+                fontSize: 10,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected ? AppColors.primaryPurple : null,
               ),
