@@ -318,4 +318,12 @@ class HabitProvider extends ChangeNotifier {
     _habits = _repository.getAllHabits();
     notifyListeners();
   }
+
+  // Clear all data (habits and user data)
+  Future<void> clearAllData() async {
+    await _repository.clearAllData();
+    _habits = [];
+    _user = await _repository.createDefaultUser();
+    notifyListeners();
+  }
 }
